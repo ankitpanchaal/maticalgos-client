@@ -41,7 +41,7 @@ export default Navbar;
 
 const Menu = ({ label, href }: { label: string; href: string }) => {
   return (
-    <Link href={`dashboard${href}`} passHref>
+    <Link href={`/dashboard${href}`} passHref>
       <span className="font-semibold inline-flex items-center relative group text-gray-800 hover:text-gray-90">
         {label}
         {/* <ArrowRight

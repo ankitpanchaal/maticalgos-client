@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useState } from "react";
 import {
   Table,
@@ -13,7 +13,9 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { StrategyExplorerProps, Strategy } from "../types";
 
 const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
-  const [subscribedStrategies, setSubscribedStrategies] = useState<Set<string>>(new Set());
+  const [subscribedStrategies, setSubscribedStrategies] = useState<Set<string>>(
+    new Set()
+  );
   const [expandedStrategy, setExpandedStrategy] = useState<string | null>(null);
 
   const handleSubscribe = (strategyId: string) => {
@@ -50,15 +52,23 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
               <TableRow>
                 <TableCell className="font-medium">{strategy.name}</TableCell>
                 <TableCell className="text-center">{strategy.type}</TableCell>
-                <TableCell className="text-center">{strategy.marginRequired.toLocaleString()}</TableCell>
+                <TableCell className="text-center">
+                  {strategy.marginRequired.toLocaleString()}
+                </TableCell>
                 <TableCell>
                   <div className="flex justify-end items-center space-x-2">
                     <Button
                       onClick={() => handleSubscribe(strategy.id)}
-                      variant={subscribedStrategies.has(strategy.id) ? "outline" : "default"}
-                      size="sm"
+                      className={`font-semibold ${
+                        subscribedStrategies.has(strategy.id)
+                          ? "border-red-500 text-red-500"
+                          : "border-green-500 text-green-500"
+                      }`}
+                      variant="outline"
                     >
-                      {subscribedStrategies.has(strategy.id) ? "Unsubscribe" : "Subscribe"}
+                      {subscribedStrategies.has(strategy.id)
+                        ? "Unsubscribe"
+                        : "Subscribe"}
                     </Button>
                     <Button
                       onClick={() => toggleAccordion(strategy.id)}
@@ -78,7 +88,9 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
                 <TableCell colSpan={4} className="p-0">
                   <div
                     className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                      expandedStrategy === strategy.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                      expandedStrategy === strategy.id
+                        ? "max-h-96 opacity-100"
+                        : "max-h-0 opacity-0"
                     }`}
                   >
                     <div className="p-4 bg-gray-100 rounded-md shadow-sm mt-2">
