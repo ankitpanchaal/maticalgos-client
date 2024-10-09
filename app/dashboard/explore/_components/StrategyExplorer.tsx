@@ -10,15 +10,15 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { StrategyExplorerProps, Strategy } from "../types";
+import { StrategyExplorerProps, IStrategy } from "../types";
 
 const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
-  const [subscribedStrategies, setSubscribedStrategies] = useState<Set<string>>(
+  const [subscribedStrategies, setSubscribedStrategies] = useState<Set<number>>(
     new Set()
   );
-  const [expandedStrategy, setExpandedStrategy] = useState<string | null>(null);
+  const [expandedStrategy, setExpandedStrategy] = useState<number | null>(null);
 
-  const handleSubscribe = (strategyId: string) => {
+  const handleSubscribe = (strategyId: number) => {
     setSubscribedStrategies((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(strategyId)) {
@@ -30,7 +30,7 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
     });
   };
 
-  const toggleAccordion = (strategyId: string) => {
+  const toggleAccordion = (strategyId: number) => {
     setExpandedStrategy((prev) => (prev === strategyId ? null : strategyId));
   };
 
@@ -47,40 +47,50 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {strategies.map((strategy: Strategy) => (
-            <React.Fragment key={strategy.id}>
+          {strategies.map((strategy: IStrategy) => (
+            <React.Fragment key={strategy.ID}>
               <TableRow
                 className={`transition-colors duration-200 ${
-                  expandedStrategy === strategy.id ? "bg-blue-100 hover:bg-blue-100" : ""
+                  expandedStrategy === strategy.ID
+                    ? "bg-blue-100 hover:bg-blue-100"
+                    : ""
                 }`}
               >
-                <TableCell className="font-medium text-center">{strategy.name}</TableCell>
-                <TableCell className="text-center">{strategy.type}</TableCell>
+                <TableCell className="font-medium text-center">
+                  {strategy.StrategyName}
+                </TableCell>
                 <TableCell className="text-center">
-                  {strategy.marginRequired.toLocaleString()}
+                  {strategy.StrategyType}
+                </TableCell>
+                <TableCell className="text-center">
+                ₹{strategy.Description?.split("|")[0]}
                 </TableCell>
                 <TableCell>
                   <div className="flex justify-end items-center space-x-2">
                     <Button
-                      onClick={() => handleSubscribe(strategy.id)}
+                      onClick={() => handleSubscribe(strategy.ID)}
                       className={`font-semibold ${
-                        subscribedStrategies.has(strategy.id)
+                        subscribedStrategies.has(strategy.ID)
                           ? "border-red-500 text-red-500"
                           : "border-green-500 text-green-500"
                       }`}
                       variant="outline"
                     >
-                      {subscribedStrategies.has(strategy.id)
+                      {subscribedStrategies.has(strategy.ID)
                         ? "Unsubscribe"
                         : "Subscribe"}
                     </Button>
                     <Button
-                      onClick={() => toggleAccordion(strategy.id)}
-                      variant={expandedStrategy === strategy.id ? "default" : "ghost"}
+                      onClick={() => toggleAccordion(strategy.ID)}
+                      variant={
+                        expandedStrategy === strategy.ID ? "default" : "ghost"
+                      }
                       size="sm"
-                      className={`hover:bg-blue-100 text-black ${expandedStrategy === strategy.id ? "bg-blue-100" : ""}`}
+                      className={`hover:bg-blue-100 text-black ${
+                        expandedStrategy === strategy.ID ? "bg-blue-100" : ""
+                      }`}
                     >
-                      {expandedStrategy === strategy.id ? (
+                      {expandedStrategy === strategy.ID ? (
                         <ChevronUp className="h-4 w-4" />
                       ) : (
                         <ChevronDown className="h-4 w-4" />
@@ -93,14 +103,14 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
                 <TableCell colSpan={4} className="p-0">
                   <div
                     className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                      expandedStrategy === strategy.id
+                      expandedStrategy === strategy.ID
                         ? "max-h-96 opacity-100"
                         : "max-h-0 opacity-0"
                     }`}
                   >
                     <div className="p-4 bg-blue-100 rounded-md shadow-sm mb-4 mt-0.5">
                       <h4 className="font-semibold mb-2">Description:</h4>
-                      <p>{strategy.description}</p>
+                      <p>{strategy.Description?.split("|")[1]}</p>
                     </div>
                   </div>
                 </TableCell>

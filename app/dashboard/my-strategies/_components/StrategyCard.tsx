@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Card,
   CardContent,
@@ -18,7 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChartNoAxesCombined, InfoIcon, MoreVertical } from "lucide-react";
+import { ChartLine, InfoIcon, MoreVertical } from "lucide-react";
 import { IStrategy } from "../types";
 
 const StrategyCard: React.FC<{ strategy: IStrategy }> = ({ strategy }) => {
@@ -51,7 +50,7 @@ const StrategyCard: React.FC<{ strategy: IStrategy }> = ({ strategy }) => {
       </CardHeader>
       <CardContent>
         <div className="flex items-center space-x-1 justify-center">
-        <ChartNoAxesCombined size={18} />
+        <ChartLine size={22} />
           <span className="font-semibold">PNL</span>
           <TooltipProvider>
             <Tooltip>

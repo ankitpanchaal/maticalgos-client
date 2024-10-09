@@ -2,14 +2,20 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import useUserStore from "@/lib/store/user/userStore";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
   const [accountName, setAccountName] = useState("");
+  const { setAccName } = useUserStore();
+
+  const router = useRouter();
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Here you would typically handle the login logic
-    console.log("Logging in with account:", accountName);
+    if(!accountName) return;
+    setAccName(accountName);
+    router.push("/dashboard/explore");
   };
 
   return (

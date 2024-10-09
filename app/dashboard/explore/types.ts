@@ -1,17 +1,19 @@
-export interface Strategy {
-  id: string;
-  name: string;
-  type: string;
-  marginRequired: number;
-  description: string;
+export interface IStrategy {
+  ID: number;
+  StrategyName: string;
+  Description: string;
+  StrategyType: string;
+  UCC: string;
+  Display: string;
+  ForwardTest: string;
 }
 
 export interface StrategyExplorerProps {
-  strategies: Strategy[];
+  strategies: IStrategy[];
 }
 
 export interface StrategyTableProps {
-  strategies: Strategy[];
+  strategies: IStrategy[];
   subscribedStrategies: Set<string>;
   onSubscribe: (strategyId: string) => void;
   onToggleAccordion: (strategyId: string) => void;
@@ -19,6 +21,12 @@ export interface StrategyTableProps {
 }
 
 export interface StrategyAccordionProps {
-  strategies: Strategy[];
+  strategies: IStrategy[];
   expandedStrategy: string | null;
+}
+
+export interface GetAllStrategiesResponse {
+  status: boolean;
+  error: boolean;
+  data: IStrategy[];
 }
