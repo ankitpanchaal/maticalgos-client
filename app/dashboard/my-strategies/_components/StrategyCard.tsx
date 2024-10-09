@@ -19,9 +19,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChartLine, InfoIcon, MoreVertical } from "lucide-react";
 import { IStrategy } from "../types";
+import formatPNL from "@/lib/formatPnl";
 
 const StrategyCard: React.FC<{ strategy: IStrategy }> = ({ strategy }) => {
-  const isActive = strategy.status === "active";
+  const isActive = strategy.Activate > 0;
 
   return (
     <Card className="w-full">
@@ -46,7 +47,7 @@ const StrategyCard: React.FC<{ strategy: IStrategy }> = ({ strategy }) => {
         )}
       </div>
       <CardHeader>
-        <h3 className="text-xl text-center font-semibold ">{strategy.name}</h3>
+        <h3 className="text-xl text-center font-semibold ">{strategy.StrategyName}</h3>
       </CardHeader>
       <CardContent>
         <div className="flex items-center space-x-1 justify-center">
@@ -65,10 +66,10 @@ const StrategyCard: React.FC<{ strategy: IStrategy }> = ({ strategy }) => {
         </div>
         <p
           className={`text-2xl font-bold text-center mt-2 ${
-            strategy.pnl >= 0 ? "text-green-600" : "text-red-600"
+            strategy.totalpnl >= 0 ? "text-green-600" : "text-red-600"
           }`}
         >
-          {strategy.pnl.toLocaleString()}
+          {formatPNL(strategy.totalpnl)}
         </p>
       </CardContent>
       <CardFooter className="flex flex-col space-y-2">
