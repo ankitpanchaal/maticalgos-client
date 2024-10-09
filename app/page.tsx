@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import useUserStore from "@/lib/store/user/userStore";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Logo from "@/public/logo_black.png";
 
 const LoginPage = () => {
   const [accountName, setAccountName] = useState("");
@@ -13,7 +15,7 @@ const LoginPage = () => {
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(!accountName) return;
+    if (!accountName) return;
     setAccName(accountName);
     router.push("/dashboard/explore");
   };
@@ -21,8 +23,8 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <div className="w-full max-w-md">
-        <div className="bg-black text-white text-center py-4 mb-8">
-          <h1 className="text-2xl font-bold">LOGO</h1>
+        <div className="flex justify-center py-4 mb-8">
+          <Image src={Logo} alt="logo" width={200} height={100} />
         </div>
 
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">

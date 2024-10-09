@@ -1,22 +1,44 @@
+"use client";
 import React from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight } from "lucide-react";
+import Logo from "@/public/logo_black.png";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const Navbar = ({ name = "User", isActive = true }) => {
+  const path = usePathname();
+
   return (
-    <nav className="flex items-center justify-between p-4 bg-white shadow-sm border-b border-secondary container mx-auto">
+    <nav className="flex items-center justify-between p-4 bg-white shadow-sm border-b border-secondary container max-w-[90%] mx-auto">
       <div className="flex items-center space-x-8 w-1/4">
-        <Link href="/" className="text-xl font-bold">
-          LOGO
+        <Link href="/">
+          <Image
+            src={Logo}
+            alt="logo"
+            width={160}
+            height={60}
+            className="cursor-pointer"
+          />
         </Link>
       </div>
-      <div className="flex space-x-6">
-        <Menu label="Explore" href="/explore" />
-        <Menu label="My Strategies" href="/my-strategies" />
-        <Menu label="Analysis" href="/analysis" />
+      <div className="flex space-x-12">
+        <Menu
+          label="Explore"
+          href="/explore"
+          isActive={path.split("/").includes("explore")}
+        />
+        <Menu
+          label="My Strategies"
+          href="/my-strategies"
+          isActive={path.split("/").includes("my-strategies")}
+        />
+        <Menu
+          label="Analysis"
+          href="/analysis"
+          isActive={path.split("/").includes("analysis")}
+        />
       </div>
       <div className="flex items-center space-x-4 w-1/4 justify-end">
         <div className="flex items-center space-x-2">
@@ -39,16 +61,29 @@ const Navbar = ({ name = "User", isActive = true }) => {
 
 export default Navbar;
 
-const Menu = ({ label, href }: { label: string; href: string }) => {
+
+const Menu = ({
+  label,
+  href,
+  isActive,
+}: {
+  label: string;
+  href: string;
+  isActive: boolean;
+}) => {
   return (
     <Link href={`/dashboard${href}`} passHref>
-      <span className="font-semibold inline-flex items-center relative group text-gray-800 hover:text-gray-90">
+      <span
+        className={`font-semibold inline-flex items-center relative group text-gray-700 hover:text-gray-900 ${
+          isActive ? "text-black" : ""
+        }`}
+      >
         {label}
-        {/* <ArrowRight
-          className="ml-1 opacity-0 -translate-x-2 transition-all duration-300 ease-in-out group-hover:opacity-100 text-primary group-hover:translate-x-1"
-          size={16}
-        /> */}
-        <span className="absolute bottom-0 left-0 w-full h-px bg-primary transform origin-left transition-all duration-300 ease-in-out scale-x-0 group-hover:scale-x-100"></span>
+        <span 
+          className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary transform origin-left transition-all duration-300 ease-in-out ${
+            isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+          }`}
+        ></span>
       </span>
     </Link>
   );
