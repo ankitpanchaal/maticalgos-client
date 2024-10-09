@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChartLine, InfoIcon, MoreVertical } from "lucide-react";
 import { IStrategy } from "../types";
-import formatPNL from "@/lib/formatPnl";
+import formatPNL from "@/lib/formatPNL";
 
 const StrategyCard: React.FC<{ strategy: IStrategy }> = ({ strategy }) => {
   const isActive = strategy.Activate > 0;
