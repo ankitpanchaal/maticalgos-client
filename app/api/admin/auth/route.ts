@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     // Apply rate limiting and account lockout protection
     const protectionError = await authProtection.checkAttempts(ip, username, userAgent);
     if (protectionError) {
-      return NextResponse.json({ error: protectionError }, { status: 429 });
+      return NextResponse.json({ message: protectionError }, { status: 429 });
     }
     
     // Read credentials from JSON file
@@ -32,13 +32,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ token });
     } else {
       return NextResponse.json(
-        { error: "Invalid credentials" },
+        { message: "Invalid credentials" },
         { status: 401 }
       );
     }
   } catch (err) {
     return NextResponse.json(
-      { error: "Authentication failed" },
+      { message: "Authentication failed" },
       { status: 500 }
     );
   }

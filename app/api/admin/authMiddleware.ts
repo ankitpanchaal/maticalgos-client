@@ -6,7 +6,7 @@ export function withAuth(handler: (req: NextRequest) => Promise<NextResponse>) {
     const token = req.headers.get("Authorization")?.split(" ")[1];
 
     if (!token) {
-      return NextResponse.json({ error: "Missing token" }, { status: 401 });
+      return NextResponse.json({ message: "Missing token" }, { status: 401 });
     }
 
     try {
@@ -15,7 +15,7 @@ export function withAuth(handler: (req: NextRequest) => Promise<NextResponse>) {
       (req as any).user = decoded;
       return handler(req);
     } catch (error) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+      return NextResponse.json({ message: "Invalid token" }, { status: 401 });
     }
   };
 }

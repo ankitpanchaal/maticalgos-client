@@ -14,7 +14,7 @@ export const POST = withAuth(async (req: NextRequest) => {
 
     // Verify current password
     if (currentPassword !== credentials.password) {
-      return NextResponse.json({ error: "Current password is incorrect" }, { status: 400 });
+      return NextResponse.json({ message: "Current password is incorrect" }, { status: 400 });
     }
 
     // Update password
@@ -27,7 +27,7 @@ export const POST = withAuth(async (req: NextRequest) => {
   } catch (error) {
     console.error("Error changing password:", error);
     return NextResponse.json(
-      { error: "An error occurred while changing the password" },
+      { message: "An error occurred while changing the password" },
       { status: 500 }
     );
   }

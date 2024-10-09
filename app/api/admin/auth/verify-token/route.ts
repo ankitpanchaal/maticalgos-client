@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
     const { token } = await req.json();
 
     if (!token) {
-      return NextResponse.json({ error: "No token provided" }, { status: 400 });
+      return NextResponse.json({ message: "No token provided" }, { status: 400 });
     }
 
     try {
@@ -16,14 +16,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ valid: true });
     } catch (error) {
       return NextResponse.json(
-        { valid: false, error: "Invalid token" },
+        { valid: false, message: "Invalid token" },
         { status: 401 }
       );
     }
   } catch (err) {
     console.error("Error verifying token:", err);
     return NextResponse.json(
-      { error: "Token verification failed" },
+      { message: "Token verification failed" },
       { status: 500 }
     );
   }
