@@ -49,8 +49,12 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
         <TableBody>
           {strategies.map((strategy: Strategy) => (
             <React.Fragment key={strategy.id}>
-              <TableRow>
-                <TableCell className="font-medium">{strategy.name}</TableCell>
+              <TableRow
+                className={`transition-colors duration-200 ${
+                  expandedStrategy === strategy.id ? "bg-blue-100 hover:bg-blue-100" : ""
+                }`}
+              >
+                <TableCell className="font-medium text-center">{strategy.name}</TableCell>
                 <TableCell className="text-center">{strategy.type}</TableCell>
                 <TableCell className="text-center">
                   {strategy.marginRequired.toLocaleString()}
@@ -72,8 +76,9 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
                     </Button>
                     <Button
                       onClick={() => toggleAccordion(strategy.id)}
-                      variant="ghost"
+                      variant={expandedStrategy === strategy.id ? "default" : "ghost"}
                       size="sm"
+                      className={`hover:bg-blue-100 text-black ${expandedStrategy === strategy.id ? "bg-blue-100" : ""}`}
                     >
                       {expandedStrategy === strategy.id ? (
                         <ChevronUp className="h-4 w-4" />
@@ -93,7 +98,7 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
                         : "max-h-0 opacity-0"
                     }`}
                   >
-                    <div className="p-4 bg-gray-100 rounded-md shadow-sm mt-2">
+                    <div className="p-4 bg-blue-100 rounded-md shadow-sm mb-4 mt-0.5">
                       <h4 className="font-semibold mb-2">Description:</h4>
                       <p>{strategy.description}</p>
                     </div>

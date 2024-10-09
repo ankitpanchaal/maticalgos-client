@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sign } from "jsonwebtoken";
 import { authProtection } from "../../_utils/authProtection";
+import fs from 'fs';
+import path from 'path';
+
+const CREDENTIALS_FILE = path.join(process.cwd(), 'credentials.json');
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,9 +17,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: protectionError }, { status: 429 });
     }
     
+    // Read credentials from JSON file
+    const credentials = JSON.parse(fs.readFileSync(CREDENTIALS_FILE, 'utf8'));
+
     if (
-      username === process.env.ADMIN_USERNAME &&
-      password === process.env.ADMIN_PASSWORD
+      username === credentials.username &&
+      password === credentials.password
     ) {
       // Generate a JWT token
       const token = sign({ username }, process.env.JWT_SECRET!, {

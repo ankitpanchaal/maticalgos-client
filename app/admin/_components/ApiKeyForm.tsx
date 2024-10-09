@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ChangePasswordDialog } from './ChangePasswordDialog';
 
 interface ApiKeyFormProps {
     onLogout: () => void;
 }
 
-const ApiKeyForm = ({ onLogout }:ApiKeyFormProps) => {
+const ApiKeyForm = ({ onLogout }: ApiKeyFormProps) => {
   const [apiKey, setApiKey] = useState('');
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
   const handleApiKeyTest = () => {
     // Implement API key test logic
@@ -32,7 +34,16 @@ const ApiKeyForm = ({ onLogout }:ApiKeyFormProps) => {
         <Button onClick={handleApiKeyTest}>Test</Button>
         <Button onClick={handleApiKeySubmit}>Submit</Button>
       </div>
-      <Button onClick={onLogout} className="w-full">Logout</Button>
+      <div className="flex justify-between mb-4">
+        <Button onClick={() => setIsChangePasswordOpen(true)} variant="outline">
+          Change Password
+        </Button>
+        <Button onClick={onLogout} variant="destructive">Logout</Button>
+      </div>
+      <ChangePasswordDialog
+        open={isChangePasswordOpen}
+        onOpenChange={setIsChangePasswordOpen}
+      />
     </>
   );
 };
