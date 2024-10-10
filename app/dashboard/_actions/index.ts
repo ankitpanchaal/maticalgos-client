@@ -1,9 +1,8 @@
 import { API_ENDPOINT } from "@/lib/constants/app-constants";
-import { cookies } from "next/headers";
 import { AccountResponse } from "../type";
 
 export const getAccount = async (): Promise<AccountResponse> => {
-  const res = await fetch(`${API_ENDPOINT}/api/user/account`, {
+  const res = await fetch(`/api/user/account`, {
     credentials: "include",
     cache: "no-store",
     method: "GET",
@@ -21,7 +20,7 @@ export const updateTradeStatus = async (
   tradeStatus: "Y" | "N"
 ): Promise<boolean> => {
   const res = await fetch(
-    `${API_ENDPOINT}/api/user/account?tradeStatus=${tradeStatus}`,
+    `/api/user/account?tradeStatus=${tradeStatus}`,
     {
       credentials: "include",
       cache: "no-store",
