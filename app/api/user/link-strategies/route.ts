@@ -5,9 +5,8 @@ import getToken from "../../_utils/getToken";
 export const GET = withUserAuth(async (req: NextRequest) => {
   try {
     const token = await getToken();
-    const url = new URL(req.url);
-    const acname = url.searchParams.get('Acname');
-
+    const acname = (req as any)?.user?.acname;
+    
     if (!acname) {
       return NextResponse.json(
         { error: "Acname query parameter is required" },
@@ -17,7 +16,6 @@ export const GET = withUserAuth(async (req: NextRequest) => {
 
     const apiUrl = new URL("/link-strategy-account/", process.env.APIV_URL);
     apiUrl.searchParams.set('ac', acname);
-
     const response = await fetch(apiUrl.toString(), {
       method: "GET",
       headers: {
@@ -33,7 +31,7 @@ export const GET = withUserAuth(async (req: NextRequest) => {
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error("Error fetching strategies:", error);
+    console.error("Error fetching linked strategies:", error);
     return NextResponse.json(
       { error: "An error occurred while fetching strategies" },
       { status: 500 }

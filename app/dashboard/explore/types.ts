@@ -7,9 +7,18 @@ export interface IStrategy {
   Display: string;
   ForwardTest: string;
 }
+export interface ILinkedStrategy {
+  StrategyName: string;
+  AccountName: string;
+  UCC: string;
+  Multiplier: number;
+  Activate: number;
+  Capital: number;
+}
 
 export interface StrategyExplorerProps {
   strategies: IStrategy[];
+  linkedStrategies: ILinkedStrategy[];
 }
 
 export interface StrategyTableProps {
@@ -29,4 +38,10 @@ export interface GetAllStrategiesResponse {
   status: boolean;
   error: boolean;
   data: IStrategy[];
+}
+
+export interface GetLinkStrategiesResponse {
+  status: boolean;
+  error: boolean;
+  data: ILinkedStrategy[];
 }

@@ -49,19 +49,18 @@ const Navbar = () => {
   const handleTradeStatusChange = async (newStatus: string) => {
     setIsUpdating(true);
     const apiStatus = newStatus === "active" ? "Y" : "N";
-    
-    toast.promise(
-      updateTradeStatus(apiStatus),
-      {
-        loading: 'Updating trade status...',
+
+    toast
+      .promise(updateTradeStatus(apiStatus), {
+        loading: "Updating trade status...",
         success: () => {
           setTradeStatus(newStatus);
           refetch(); // Refetch the account data
-          return 'Trade status updated successfully';
+          return "Trade status updated successfully";
         },
-        error: 'Failed to update trade status',
-      }
-    ).finally(() => setIsUpdating(false));
+        error: "Failed to update trade status",
+      })
+      .finally(() => setIsUpdating(false));
   };
 
   const menuItems = [
@@ -71,31 +70,46 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="flex items-center justify-between p-4 bg-white shadow-sm border-b border-secondary container max-w-[90%] mx-auto">
+    <nav className="bg-white shadow-sm border-b border-secondary fixed top-0 w-full">
+    <div className="flex items-center justify-between p-4 container max-w-[90%] mx-auto">
       <div className="flex items-center space-x-8">
-        <Link href="/" className="w-[120px] h-[45px] md:w-[160px] md:h-[60px] cursor-pointer relative" >
-          <Image
-            src={Logo}
-            alt="logo"
-            fill
-            className="object-contain"
-          />
+        <Link
+          href="/"
+          className="w-[120px] h-[45px] md:w-[160px] md:h-[60px] cursor-pointer relative"
+        >
+          <Image src={Logo} alt="logo" fill className="object-contain" />
         </Link>
       </div>
+
+      <div className="md:flex hidden space-x-12">
+        {menuItems.map((item) => (
+          <Menu
+            key={item.href}
+            label={item.label}
+            href={item.href}
+            isActive={path === `/dashboard${item.href}`}
+          />
+        ))}
+      </div>
+
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-600 hidden md:inline">Trade Status:</span>
+          <span className="text-sm text-gray-600 hidden md:inline">
+            Trade Status:
+          </span>
           {isPending ? (
             <Skeleton className="h-10 w-[100px]" />
           ) : (
-            <Select 
-              value={tradeStatus} 
+            <Select
+              value={tradeStatus}
               onValueChange={handleTradeStatusChange}
               disabled={isUpdating}
             >
               <SelectTrigger
                 className={`bg-gray-50 border ${
-                  tradeStatus === "active" ? "border-green-600" : "border-red-400"
+                  tradeStatus === "active"
+                    ? "border-green-600"
+                    : "border-red-400"
                 } w-[100px]`}
               >
                 <SelectValue />
@@ -129,7 +143,9 @@ const Navbar = () => {
             )}
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>Account :  {isPending ? <Skeleton className="h-4 w-20" /> : name}</DropdownMenuItem>
+            <DropdownMenuItem>
+              Account : {isPending ? <Skeleton className="h-4 w-20" /> : name}
+            </DropdownMenuItem>
             <div className="md:hidden">
               {menuItems.map((item) => (
                 <DropdownMenuItem key={item.href}>
@@ -150,6 +166,7 @@ const Navbar = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      </div>
     </nav>
   );
 };
@@ -166,8 +183,8 @@ const Menu = ({
   return (
     <Link href={`/dashboard${href}`} passHref>
       <span
-        className={`font-semibold inline-flex items-center relative group text-gray-700 hover:text-gray-900 ${
-          isActive ? "text-black" : ""
+        className={`font-semibold inline-flex items-center relative group hover:text-gray-900 ${
+          isActive ? "text-black" : "text-gray-700"
         }`}
       >
         {label}
