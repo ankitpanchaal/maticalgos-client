@@ -4,10 +4,17 @@ import getToken from "../../_utils/getToken";
 
 export const GET = withUserAuth(async (req: NextRequest) => {
   try {
-    const user = (req as any).user;
+    const acname = (req as any)?.user?.acname;
     const token = await getToken();
 
-    const response = await fetch(process.env.APIV_URL + "/strategy", {
+    if (!acname) {
+      return NextResponse.json(
+        { error: "Acname query parameter is required" },
+        { status: 400 }
+      );
+    }
+
+    const response = await fetch(process.env.APIV_URL + "/account/" + acname, {
       method: "GET",
       headers: {
         accept: "application/json",

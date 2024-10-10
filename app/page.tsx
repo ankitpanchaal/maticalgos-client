@@ -1,23 +1,61 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import useUserStore from "@/lib/store/user/userStore";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Logo from "@/public/logo_black.png";
 
 const LoginPage = () => {
   const [accountName, setAccountName] = useState("");
-  const { setAccName } = useUserStore();
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    const checkExistingToken = async () => {
+      try {
+        const response = await fetch('/api/user/login', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          router.push("/dashboard/explore");
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+        // If there's an error, we stay on the login page
+      }
+    };
+
+    checkExistingToken();
+  }, [router]);
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!accountName) return;
-    setAccName(accountName);
-    router.push("/dashboard/explore");
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(`/api/user/login?Acname=${encodeURIComponent(accountName)}`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+
+      router.push("/dashboard/explore");
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -40,12 +78,15 @@ const LoginPage = () => {
                 value={accountName}
                 onChange={(e) => setAccountName(e.target.value)}
                 className="w-full"
+                disabled={isLoading}
               />
             </div>
 
+            {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
             <div className="flex items-center justify-center">
-              <Button type="submit" className="w-full">
-                LOGIN
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? 'LOGGING IN...' : 'LOGIN'}
               </Button>
             </div>
           </form>

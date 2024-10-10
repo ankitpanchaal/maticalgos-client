@@ -4,10 +4,21 @@ import getToken from "../../_utils/getToken";
 
 export const GET = withUserAuth(async (req: NextRequest) => {
   try {
-    const user = (req as any).user;
     const token = await getToken();
+    const url = new URL(req.url);
+    const acname = url.searchParams.get('Acname');
 
-    const response = await fetch(process.env.APIV_URL + "/strategy", {
+    if (!acname) {
+      return NextResponse.json(
+        { error: "Acname query parameter is required" },
+        { status: 400 }
+      );
+    }
+
+    const apiUrl = new URL("/link-strategy-account/", process.env.APIV_URL);
+    apiUrl.searchParams.set('ac', acname);
+
+    const response = await fetch(apiUrl.toString(), {
       method: "GET",
       headers: {
         accept: "application/json",
