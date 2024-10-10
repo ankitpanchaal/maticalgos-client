@@ -263,7 +263,7 @@ const linkStartegyToAccount = async (
   type: "subscribe" | "unsubscribe"
 ): Promise<any> => {
   console.log("TYPE : ", type);
-  const res = await fetch(API_ENDPOINT + "/api/user/link-strategies", {
+  const res = await fetch(`${API_ENDPOINT}/api/user/link-strategies`, {
     credentials: "include",
     cache: "no-store",
     method: "POST",
@@ -274,7 +274,7 @@ const linkStartegyToAccount = async (
 };
 
 const getLinkedStrategies = async (): Promise<GetLinkStrategiesResponse> => {
-  const res = await fetch(API_ENDPOINT + "/api/user/link-strategies", {
+  const res = await fetch(`${API_ENDPOINT}/api/user/link-strategies`, {
     cache: "no-store",
     credentials: "include",
     method: "GET",
