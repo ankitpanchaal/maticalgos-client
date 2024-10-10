@@ -11,13 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useLogout } from "@/lib/hooks/useLogout";
 import { getAccount, updateTradeStatus } from "../_actions";
 import { useQuery } from "@tanstack/react-query";
@@ -46,8 +39,11 @@ const Navbar = () => {
     }
   }, [data]);
 
-  const handleTradeStatusChange = async (newStatus: string) => {
+  const handleTradeStatusToggle = async () => {
+    if (isUpdating) return;
+
     setIsUpdating(true);
+    const newStatus = tradeStatus === "active" ? "inactive" : "active";
     const apiStatus = newStatus === "active" ? "Y" : "N";
 
     toast
@@ -71,101 +67,79 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-sm border-b border-secondary fixed top-0 w-full">
-    <div className="flex items-center justify-between p-4 container max-w-[90%] mx-auto">
-      <div className="flex items-center space-x-8">
-        <Link
-          href="/"
-          className="w-[120px] h-[45px] md:w-[160px] md:h-[60px] cursor-pointer relative"
-        >
-          <Image src={Logo} alt="logo" fill className="object-contain" />
-        </Link>
-      </div>
-
-      <div className="md:flex hidden space-x-12">
-        {menuItems.map((item) => (
-          <Menu
-            key={item.href}
-            label={item.label}
-            href={item.href}
-            isActive={path === `/dashboard${item.href}`}
-          />
-        ))}
-      </div>
-
-      <div className="flex items-center space-x-4">
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-600 hidden md:inline">
-            Trade Status:
-          </span>
-          {isPending ? (
-            <Skeleton className="h-10 w-[100px]" />
-          ) : (
-            <Select
-              value={tradeStatus}
-              onValueChange={handleTradeStatusChange}
-              disabled={isUpdating}
-            >
-              <SelectTrigger
-                className={`bg-gray-50 border ${
-                  tradeStatus === "active"
-                    ? "border-green-600"
-                    : "border-red-400"
-                } w-[100px]`}
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem
-                  value="active"
-                  className="text-green-600 hover:!text-green-600"
-                >
-                  Active
-                </SelectItem>
-                <SelectItem value="inactive" className="text-gray-800">
-                  Inactive
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          )}
+      <div className="flex items-center justify-between p-4 container max-w-[90%] mx-auto">
+        <div className="flex items-center space-x-8">
+          <Link
+            href="/"
+            className="w-[120px] h-[45px] md:w-[160px] md:h-[60px] cursor-pointer relative"
+          >
+            <Image src={Logo} alt="logo" fill className="object-contain" />
+          </Link>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger className="rounded-full">
-            {isPending ? (
-              <Skeleton className="h-10 w-10 rounded-full" />
-            ) : (
-              <Avatar>
-                <AvatarImage
-                  src={`https://api.dicebear.com/6.x/initials/svg?seed=${name}`}
-                  alt={name}
-                />
-                <AvatarFallback>{name?.charAt(0)}</AvatarFallback>
-              </Avatar>
-            )}
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>
-              Account : {isPending ? <Skeleton className="h-4 w-20" /> : name}
-            </DropdownMenuItem>
-            <div className="md:hidden">
-              {menuItems.map((item) => (
-                <DropdownMenuItem key={item.href}>
-                  <Link href={`/dashboard${item.href}`} className="w-full">
-                    {item.label}
-                  </Link>
 
-                  <ExternalLink className="ml-2" />
-                </DropdownMenuItem>
-              ))}
-            </div>
-            <DropdownMenuItem
-              onClick={logout}
-              className="text-red-600 cursor-pointer hover:!text-red-600"
-            >
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+        <div className="md:flex hidden space-x-12">
+          {menuItems.map((item) => (
+            <Menu
+              key={item.href}
+              label={item.label}
+              href={item.href}
+              isActive={path === `/dashboard${item.href}`}
+            />
+          ))}
+        </div>
+
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-600 hidden md:inline">
+              Trade Status:
+            </span>
+            {isPending ? (
+              <Skeleton className="h-6 w-16" />
+            ) : (
+              <Badge
+                status={tradeStatus}
+                onClick={handleTradeStatusToggle}
+                disabled={isUpdating}
+              />
+            )}
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="rounded-full">
+              {isPending ? (
+                <Skeleton className="h-10 w-10 rounded-full" />
+              ) : (
+                <Avatar>
+                  <AvatarImage
+                    src={`https://api.dicebear.com/6.x/initials/svg?seed=${name}`}
+                    alt={name}
+                  />
+                  <AvatarFallback>{name?.charAt(0)}</AvatarFallback>
+                </Avatar>
+              )}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>
+                Account : {isPending ? <Skeleton className="h-4 w-20" /> : name}
+              </DropdownMenuItem>
+              <div className="md:hidden">
+                {menuItems.map((item) => (
+                  <DropdownMenuItem key={item.href}>
+                    <Link href={`/dashboard${item.href}`} className="w-full">
+                      {item.label}
+                    </Link>
+                    <ExternalLink className="ml-2" />
+                  </DropdownMenuItem>
+                ))}
+              </div>
+              <DropdownMenuItem
+                onClick={logout}
+                className="text-red-600 cursor-pointer hover:!text-red-600"
+              >
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </nav>
   );
@@ -195,6 +169,22 @@ const Menu = ({
         ></span>
       </span>
     </Link>
+  );
+};
+
+const Badge = ({ status, onClick, disabled }: { status: string | undefined, onClick: () => void, disabled: boolean }) => {
+  const bgColor = status === "active" ? "bg-green-100" : "bg-red-100";
+  const textColor = status === "active" ? "text-green-800" : "text-red-800";
+  const hoverColor = status === "active" ? "hover:bg-green-200" : "hover:bg-red-200";
+
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`px-2 py-1 rounded-full text-xs font-semibold ${bgColor} ${textColor} ${hoverColor} transition-colors duration-200 ease-in-out ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+    >
+      {status === "active" ? "Active" : "Inactive"}
+    </button>
   );
 };
 
