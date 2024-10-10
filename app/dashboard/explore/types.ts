@@ -18,7 +18,6 @@ export interface ILinkedStrategy {
 
 export interface StrategyExplorerProps {
   strategies: IStrategy[];
-  linkedStrategies: ILinkedStrategy[];
 }
 
 export interface StrategyTableProps {
