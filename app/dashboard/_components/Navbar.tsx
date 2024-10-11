@@ -123,7 +123,7 @@ const Navbar = () => {
               </DropdownMenuItem>
               <div className="md:hidden">
                 {menuItems.map((item) => (
-                  <DropdownMenuItem key={item.href}>
+                  <DropdownMenuItem key={item.href} className={`${path === `/dashboard${item.href}` ? "bg-gray-100":""}`} >
                     <Link href={`/dashboard${item.href}`} className="w-full">
                       {item.label}
                     </Link>

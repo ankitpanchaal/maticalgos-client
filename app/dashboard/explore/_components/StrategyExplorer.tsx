@@ -104,7 +104,6 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
     },
     {
       id: "actions",
-      header: "Actions",
       cell: ({ row }) => (
         <SubscribeButton
           strategy={row.original}
@@ -134,7 +133,7 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
   return (
     <div className="relative overflow-x-auto" style={{ maxHeight: "75vh" }}>
       <Table>
-        <TableHeader className="sticky top-0 z-10 bg-white">
+        <TableHeader className="sticky top-0 z-10 bg-gray-50 hover:bg-gray-50">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header, index) => (
@@ -232,7 +231,7 @@ const StrategyRow: React.FC<{
               : ""
           }`}
         >
-          <div className="flex items-center justify-center">
+          <div className={`flex items-center justify-center ${cell.column.columnDef.id === "actions" ?"w-36 md:ml-[30%] justify-between border-red-700":""}`}>
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
             {cell.column.columnDef.id === "actions" && (
               expandedRow === row.id ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />)}

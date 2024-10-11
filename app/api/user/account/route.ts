@@ -58,8 +58,6 @@ export const PUT = withUserAuth(async (req: NextRequest) => {
         { status: 400 }
       );
     }
-
-    // const response = await fetch(process.env.APIV_URL + "/account/" + acname, {
     const response = await fetch(
       `${process.env.APIV_URL}/activate-account/${acname}/${tradeStatus}`,
       {
