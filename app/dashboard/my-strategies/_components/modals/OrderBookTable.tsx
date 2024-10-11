@@ -1,6 +1,4 @@
-"use client";
-
-import React from "react";
+import React, { useState } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -9,14 +7,6 @@ import {
   getSortedRowModel,
   SortingState,
 } from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { OrderBookItem } from "../../types";
@@ -41,15 +31,18 @@ const formatDate = (dateString: string) => {
   });
 };
 
-const getSortingButton = (column: any, label: string) => (
+const getSortingButton = (column: ColumnDef<OrderBookItem>, label: string) => (
   <Button
     variant="ghost"
+    //@ts-ignore
     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
     className="whitespace-nowrap"
-  >
+    >
     {label}
+    {/* @ts-ignore */}
     {column.getIsSorted() === "asc" ? (
       <ArrowUp className="ml-2 h-4 w-4" />
+      //@ts-ignore
     ) : column.getIsSorted() === "desc" ? (
       <ArrowDown className="ml-2 h-4 w-4" />
     ) : (
@@ -58,13 +51,8 @@ const getSortingButton = (column: any, label: string) => (
   </Button>
 );
 
-const getBadgeCell = (
-  row: any,
-  key: string,
-  variant: string,
-  currency: string = "INR"
-) => {
-  const value = row.getValue(key) as number;
+const getBadgeCell = (row: any, key: string, variant: string, currency = "INR") => {
+  const value = row.getValue(key);
   return (
     <Badge variant="outline" className={variant}>
       {new Intl.NumberFormat("en-IN", { style: "currency", currency }).format(
@@ -74,66 +62,94 @@ const getBadgeCell = (
   );
 };
 
+// Define column priorities
+const columnPriorities: { [key: string]: number } = {
+  AccountName: 1,
+  strefID: 2,
+  reftag: 3,
+  StrategyName: 4,
+  orderType: 5,
+  price: 6,
+  limitPrice: 7,
+  triggerPrice: 8,
+  token: 9,
+  segment: 10,
+  symbol: 11,
+  qty: 12,
+  transType: 13,
+  Operations: 14,
+  ordersplaced: 15,
+  ordersdone: 16,
+  ordersexecuted: 17,
+  placed_at: 18,
+  recon_at: 19,
+  trade_at: 20,
+  filledQty: 21,
+  tradedQty: 22,
+  tradeValue: 23,
+  tradePrice: 24,
+  status: 25,
+  active: 26,
+  productType: 27, // Lower priority
+};
+
+// Sort columns by priority
 const columns: ColumnDef<OrderBookItem>[] = [
   {
     accessorKey: "AccountName",
-    header: ({ column }) => getSortingButton(column, "Account Name"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Account Name"),
   },
   {
     accessorKey: "strefID",
-    header: ({ column }) => getSortingButton(column, "Stref ID"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Stref ID"),
   },
   {
     accessorKey: "reftag",
-    header: ({ column }) => getSortingButton(column, "Ref Tag"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Ref Tag"),
   },
   {
     accessorKey: "StrategyName",
-    header: ({ column }) => getSortingButton(column, "Strategy Name"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Strategy Name"),
   },
   {
     accessorKey: "orderType",
-    header: ({ column }) => getSortingButton(column, "Order Type"),
-  },
-  {
-    accessorKey: "productType",
-    header: ({ column }) => getSortingButton(column, "Product Type"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Order Type"),
   },
   {
     accessorKey: "price",
-    header: ({ column }) => getSortingButton(column, "Price"),
-    cell: ({ row }) => getBadgeCell(row, "price", "bg-blue-100"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Price"),
+    cell: ({ row }: { row: any }) => getBadgeCell(row, "price", "bg-blue-100"),
   },
   {
     accessorKey: "limitPrice",
-    header: ({ column }) => getSortingButton(column, "Limit Price"),
-    cell: ({ row }) => getBadgeCell(row, "limitPrice", "bg-green-100"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Limit Price"),
+    cell: ({ row }: { row: any }) => getBadgeCell(row, "limitPrice", "bg-green-100"),
   },
   {
     accessorKey: "triggerPrice",
-    header: ({ column }) => getSortingButton(column, "Trigger Price"),
-    cell: ({ row }) => getBadgeCell(row, "triggerPrice", "bg-yellow-100"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Trigger Price"),
+    cell: ({ row }: { row: any }) => getBadgeCell(row, "triggerPrice", "bg-yellow-100"),
   },
   {
     accessorKey: "token",
-    header: ({ column }) => getSortingButton(column, "Token"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Token"),
   },
   {
     accessorKey: "segment",
-    header: ({ column }) => getSortingButton(column, "Segment"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Segment"),
   },
   {
     accessorKey: "symbol",
-    header: ({ column }) => getSortingButton(column, "Symbol"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Symbol"),
   },
   {
     accessorKey: "qty",
-    header: ({ column }) => getSortingButton(column, "Quantity"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Quantity"),
   },
   {
     accessorKey: "transType",
-    header: ({ column }) => getSortingButton(column, "Transaction Type"),
-    cell: ({ row }) => (
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Transaction Type"),
+    cell: ({ row }: { row: any }) => (
       <Badge
         variant={
           row.original.transType.toLowerCase() === "buy"
@@ -148,7 +164,7 @@ const columns: ColumnDef<OrderBookItem>[] = [
   {
     accessorKey: "Operations",
     header: "Operations",
-    cell: ({ row }) => (
+    cell:({ row }: { row: any }) => (
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>View Operations</TooltipTrigger>
@@ -161,53 +177,53 @@ const columns: ColumnDef<OrderBookItem>[] = [
   },
   {
     accessorKey: "ordersplaced",
-    header: ({ column }) => getSortingButton(column, "Orders Placed"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Orders Placed"),
   },
   {
     accessorKey: "ordersdone",
-    header: ({ column }) => getSortingButton(column, "Orders Done"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Orders Done"),
   },
   {
     accessorKey: "ordersexecuted",
-    header: ({ column }) => getSortingButton(column, "Orders Executed"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Orders Executed"),
   },
   {
     accessorKey: "placed_at",
-    header: ({ column }) => getSortingButton(column, "Placed At"),
-    cell: ({ row }) => formatDate(row.getValue("placed_at")),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Placed At"),
+    cell: ({ row }: { row: any }) => formatDate(row.getValue("placed_at")),
   },
   {
     accessorKey: "recon_at",
-    header: ({ column }) => getSortingButton(column, "Recon At"),
-    cell: ({ row }) => formatDate(row.getValue("recon_at")),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Recon At"),
+    cell: ({ row }: { row: any }) => formatDate(row.getValue("recon_at")),
   },
   {
     accessorKey: "trade_at",
-    header: ({ column }) => getSortingButton(column, "Trade At"),
-    cell: ({ row }) => formatDate(row.getValue("trade_at")),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Trade At"),
+    cell: ({ row }: { row: any }) => formatDate(row.getValue("trade_at")),
   },
   {
     accessorKey: "filledQty",
-    header: ({ column }) => getSortingButton(column, "Filled Quantity"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Filled Quantity"),
   },
   {
     accessorKey: "tradedQty",
-    header: ({ column }) => getSortingButton(column, "Traded Quantity"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Traded Quantity"),
   },
   {
     accessorKey: "tradeValue",
-    header: ({ column }) => getSortingButton(column, "Trade Value"),
-    cell: ({ row }) => getBadgeCell(row, "tradeValue", "bg-purple-100"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Trade Value"),
+    cell: ({ row }: { row: any }) => getBadgeCell(row, "tradeValue", "bg-purple-100"),
   },
   {
     accessorKey: "tradePrice",
-    header: ({ column }) => getSortingButton(column, "Trade Price"),
-    cell: ({ row }) => getBadgeCell(row, "tradePrice", "bg-pink-100"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Trade Price"),
+    cell: ({ row }: { row: any }) => getBadgeCell(row, "tradePrice", "bg-pink-100"),
   },
   {
     accessorKey: "status",
-    header: ({ column }) => getSortingButton(column, "Status"),
-    cell: ({ row }) => {
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Status"),
+    cell: ({ row }: { row: any }) => {
       const value = row.getValue("status") as string;
       let variant: "default" | "destructive" | "outline" = "outline";
       if (value.toLowerCase() === "executed") variant = "default";
@@ -218,13 +234,17 @@ const columns: ColumnDef<OrderBookItem>[] = [
   },
   {
     accessorKey: "active",
-    header: ({ column }) => getSortingButton(column, "Active"),
-    cell: ({ row }) => (row.getValue("active") === 1 ? "Yes" : "No"),
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Active"),
+    cell: ({ row }: { row: any }) => (row.getValue("active") === 1 ? "Yes" : "No"),
   },
-];
+  {
+    accessorKey: "productType",
+    header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Product Type"),
+  },
+].sort((a, b) => columnPriorities[a.accessorKey as string] - columnPriorities[b.accessorKey as string]);
 
 export function OrderBookTable({ data }: { data: OrderBookItem[] }) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
     data,
@@ -238,59 +258,42 @@ export function OrderBookTable({ data }: { data: OrderBookItem[] }) {
   });
 
   return (
-    <div className="rounded-md border overflow-x-auto max-w-[85vw] min-h-[80vh] flex flex-col">
-      <div className="flex-grow overflow-y-auto">
-        <Table>
-          <TableHeader className="sticky top-0 bg-gray-200 z-10">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  className="text-center"
+    <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-200px)]">
+      <table className="w-full border-collapse">
+        <thead className="sticky top-0 bg-gray-100 z-10">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th
+                  key={header.id}
+                  className="px-4 py-3 border border-gray-200 font-medium text-left"
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
                       )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody className="bg-white text-sm">
+          {table.getRowModel().rows.map((row) => (
+            <tr key={row.id} className="hover:bg-gray-50">
+              {row.getVisibleCells().map((cell) => (
+                <td
+                  key={cell.id}
+                  className="px-4 py-2 whitespace-nowrap border border-gray-200"
                 >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="overflow-x-auto">
-        {/* This empty div will create a horizontal scrollbar at the bottom */}
-      </div>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
