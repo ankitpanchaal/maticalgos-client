@@ -234,6 +234,8 @@ const StrategyRow: React.FC<{
         >
           <div className="flex items-center justify-center">
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            {cell.column.columnDef.id === "actions" && (
+              expandedRow === row.id ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />)}
           </div>
         </TableCell>
       ))}

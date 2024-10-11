@@ -13,13 +13,6 @@ export const getAllStrategies = async (): Promise<GetAllStrategiesResponse> => {
     cache: "no-store",
   });
 
-  if (!res.ok) {
-    if (res.status === 307) {
-      throw new Error("Authentication required");
-    }
-    throw new Error(`HTTP error! status: ${res.status}`);
-  }
-
   const data = await res.json();
   return data;
 };
