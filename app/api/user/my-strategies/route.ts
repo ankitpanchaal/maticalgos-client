@@ -5,8 +5,7 @@ import getToken from "../../_utils/getToken";
 export const GET = withUserAuth(async (req: NextRequest) => {
   try {
     const token = await getToken();
-    const url = new URL(req.url);
-    const acname = url.searchParams.get('Acname');
+    const acname = (req as any)?.user?.acname;
 
     if (!acname) {
       return NextResponse.json(

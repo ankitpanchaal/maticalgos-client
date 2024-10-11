@@ -3,7 +3,7 @@ import StrategyCard from "./_components/StrategyCard";
 import { getMyStrategies } from "./_actions";
 
 const page = async() => {
-  const strategies = await getMyStrategies("forwardTester");
+  const strategies = await getMyStrategies();
 
   return (
     <div className="container max-w-6xl mx-auto p-4">
