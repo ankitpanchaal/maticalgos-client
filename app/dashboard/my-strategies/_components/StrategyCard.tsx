@@ -1,5 +1,5 @@
-'use client'
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -24,29 +24,45 @@ import { IStrategy } from "../types";
 import formatPNL from "@/lib/formatPNL";
 import { Badge } from "@/components/ui/badge";
 import PNLDisplay from "./PNLDisplay";
-import ConfirmationModal from './modals/ConfirmationModal';
-import OrderBookModal from './modals/OrderBookModal';
-import ChartModal from './modals/ChartModal';
+import ConfirmationModal from "./modals/ConfirmationModal";
+import OrderBookModal from "./modals/OrderBookModal";
+import ChartModal from "./modals/ChartModal";
 
-const StrategyCard: React.FC<{ strategy: IStrategy }> = ({ strategy }) => {
-  const [isActive, setIsActive] = useState(strategy.Activate > 0);
+interface Props {
+  strategy: IStrategy;
+  isActive: boolean;
+  handleStrategyStatus: (id: string, name: string, activate: number) => void;
+  handleSqureOffStrategy: (name: string) => void;
+}
+
+const StrategyCard: React.FC<Props> = ({
+  strategy,
+  handleStrategyStatus,
+  isActive,
+  handleSqureOffStrategy,
+}) => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [confirmAction, setConfirmAction] = useState<'deploy' | 'stop' | 'squareOff' | null>(null);
+  const [confirmAction, setConfirmAction] = useState<
+    "deploy" | "stop" | "squareOff" | null
+  >(null);
   const [isOrderBookOpen, setIsOrderBookOpen] = useState(false);
   const [isChartOpen, setIsChartOpen] = useState(false);
 
   const handleConfirm = () => {
-    if (confirmAction === 'deploy' || confirmAction === 'stop') {
-      setIsActive(!isActive);
-    } else if (confirmAction === 'squareOff') {
-      // Implement square off logic here
-      console.log('Squaring off...');
+    if (confirmAction === "deploy" || confirmAction === "stop") {
+      handleStrategyStatus(
+        strategy.ID,
+        strategy.StrategyName,
+        isActive ? 0 : 1
+      );
+    } else if (confirmAction === "squareOff") {
+      handleSqureOffStrategy(strategy.StrategyName);
     }
     setIsConfirmOpen(false);
     setConfirmAction(null);
   };
 
-  const openConfirmModal = (action: 'deploy' | 'stop' | 'squareOff') => {
+  const openConfirmModal = (action: "deploy" | "stop" | "squareOff") => {
     setConfirmAction(action);
     setIsConfirmOpen(true);
   };
@@ -65,15 +81,15 @@ const StrategyCard: React.FC<{ strategy: IStrategy }> = ({ strategy }) => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {isActive ? (
-        <Badge className="bg-green-100 text-green-800 hover:bg-green-100" >
-          Active
-          </Badge>
-        ) : (
-        <Badge className="bg-red-100 text-red-800 hover:bg-red-100" >
-          Inactive
+        <Badge
+          className={`cursor-pointer hover:bg-${
+            isActive ? "green" : "red"
+          }-100 bg-${isActive ? "green" : "red"}-100 text-${
+            isActive ? "green" : "red"
+          }-800`}
+        >
+          {isActive ? "Active" : "Inactive"}
         </Badge>
-        )}
       </div>
       <CardHeader>
         <h3 className="text-xl text-center font-semibold ">
@@ -82,7 +98,11 @@ const StrategyCard: React.FC<{ strategy: IStrategy }> = ({ strategy }) => {
       </CardHeader>
       <CardContent>
         <div className="flex items-center space-x-2 justify-center">
-          <Button variant={"secondary"} size={'sm'} onClick={() => setIsChartOpen(true)}>
+          <Button
+            variant={"secondary"}
+            size={"sm"}
+            onClick={() => setIsChartOpen(true)}
+          >
             <ChartLine size={18} />
           </Button>
           <span className="font-semibold">PNL</span>
@@ -113,20 +133,20 @@ const StrategyCard: React.FC<{ strategy: IStrategy }> = ({ strategy }) => {
             style={
               !isActive ? { backgroundColor: "#22c55e", color: "white" } : {}
             }
-            onClick={() => openConfirmModal(isActive ? 'stop' : 'deploy')}
+            onClick={() => openConfirmModal(isActive ? "stop" : "deploy")}
           >
             {isActive ? "Stop" : "Deploy"}
           </Button>
-          <Button 
-            className="flex-1" 
+          <Button
+            className="flex-1"
             variant="outline"
-            onClick={() => openConfirmModal('squareOff')}
+            onClick={() => openConfirmModal("squareOff")}
           >
             Square Off
           </Button>
         </div>
-        <Button 
-          className="w-full" 
+        <Button
+          className="w-full"
           variant="outline"
           onClick={() => setIsOrderBookOpen(true)}
         >
@@ -144,13 +164,12 @@ const StrategyCard: React.FC<{ strategy: IStrategy }> = ({ strategy }) => {
 
       <OrderBookModal
         isOpen={isOrderBookOpen}
+        acname={strategy.AccountName}
+        stname={strategy.StrategyName}
         onClose={() => setIsOrderBookOpen(false)}
       />
 
-      <ChartModal
-        isOpen={isChartOpen}
-        onClose={() => setIsChartOpen(false)}
-      />
+      <ChartModal isOpen={isChartOpen} onClose={() => setIsChartOpen(false)} />
     </Card>
   );
 };

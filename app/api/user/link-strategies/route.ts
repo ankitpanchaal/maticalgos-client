@@ -109,3 +109,62 @@ export const POST = withUserAuth(async (req: NextRequest) => {
     );
   }
 });
+
+//update status of strategy
+export const PUT = withUserAuth(async (req: NextRequest) => {
+  try {
+    const token = await getToken();
+    const acname = (req as any)?.user?.acname;
+    const { StrategyID, StrategyName, Activate } = await req.json();
+
+    if (!acname) {
+      return NextResponse.json(
+        { message: "Acname query parameter is required" },
+        { status: 400 }
+      );
+    }
+    if (!StrategyID || !StrategyName) {
+      return NextResponse.json(
+        { message: "StrategyID and StrategyName are required" },
+        { status: 400 }
+      );
+    }
+
+    const body = {
+        "Multiplier": 1,
+        Activate,
+        "Capital": 0
+    };
+
+    let response = await fetch(
+        process.env.APIV_URL +
+          "/linkstrategy?st=" +
+          StrategyName +
+          "&ac=" +
+          acname,
+        {
+          method: "PUT",
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
+
+    if (!response.ok) {
+      console.log("response : ", response.status);
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Error linking strategy:", error);
+    return NextResponse.json(
+      { error: "An error occurred while linking strategy" },
+      { status: 500 }
+    );
+  }
+});
