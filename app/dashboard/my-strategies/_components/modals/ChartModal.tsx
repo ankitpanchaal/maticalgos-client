@@ -127,7 +127,9 @@ const ChartModal: React.FC<ChartModalProps> = ({ isOpen, onClose }) => {
                     left: 20,
                     bottom: 5,
                   }}
+                  //@ts-ignore
                   onMouseDown={e => setRefAreaLeft(e?.activeLabel)}
+                  //@ts-ignore
                   onMouseMove={e => refAreaLeft && setRefAreaRight(e?.activeLabel)}
                   onMouseUp={zoom}
                 >
