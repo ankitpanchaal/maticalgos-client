@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-hot-toast"
@@ -25,6 +24,7 @@ import {
   AccordionItem,
 } from "@/components/ui/accordion"
 import SkeletonLoader from "./SkeletonLoader"
+import { getLinkedStrategies, linkStartegyToAccount } from "../_actions/client"
 
 const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
   const [sorting, setSorting] = useState<SortingState>([])
@@ -33,7 +33,7 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
 
   const { data: linkedStrategies, isPending } = useQuery<GetLinkStrategiesResponse>({
     queryKey: ["linkedStrategies"],
-    queryFn: getLinkedStrategies,
+    queryFn: getLinkedStrategies
   })
 
   const linkMutation = useMutation({
@@ -251,30 +251,3 @@ const SubscribeButton: React.FC<{
 )
 
 export default StrategyExplorer
-
-const linkStartegyToAccount = async (
-  StrategyID: number,
-  StrategyName: string,
-  type: "subscribe" | "unsubscribe"
-): Promise<any> => {
-  console.log("TYPE : ", type)
-  const res = await fetch(`/api/user/link-strategies`, {
-    credentials: "include",
-    cache: "no-store",
-    method: "POST",
-    body: JSON.stringify({ StrategyID, StrategyName, type }),
-  })
-  const data = await res.json()
-  return data
-}
-
-const getLinkedStrategies = async (): Promise<GetLinkStrategiesResponse> => {
-  const res = await fetch(`/api/user/link-strategies`, {
-    cache: "no-store",
-    credentials: "include",
-    method: "GET",
-  })
-
-  const data = await res.json()
-  return data
-}

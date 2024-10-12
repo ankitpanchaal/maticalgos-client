@@ -17,6 +17,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChartLine, InfoIcon, MoreVertical } from "lucide-react";
@@ -27,11 +29,14 @@ import PNLDisplay from "./PNLDisplay";
 import ConfirmationModal from "./modals/ConfirmationModal";
 import OrderBookModal from "./modals/OrderBookModal";
 import ChartModal from "./modals/ChartModal";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { linkStartegyToAccount } from "../../explore/_actions/client";
+import toast from "react-hot-toast";
 
 interface Props {
   strategy: IStrategy;
   isActive: boolean;
-  handleStrategyStatus: (id: string, name: string, activate: number) => void;
+  handleStrategyStatus: (id: number, name: string, activate: number) => void;
   handleSqureOffStrategy: (name: string) => void;
 }
 
@@ -41,12 +46,22 @@ const StrategyCard: React.FC<Props> = ({
   isActive,
   handleSqureOffStrategy,
 }) => {
+  const queryClient = useQueryClient();
+
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<
-    "deploy" | "stop" | "squareOff" | null
+    "deploy" | "stop" | "squareOff" | 'unsubscribe' | null
   >(null);
   const [isOrderBookOpen, setIsOrderBookOpen] = useState(false);
   const [isChartOpen, setIsChartOpen] = useState(false);
+
+  const unSubscribeMutation = useMutation({
+    mutationFn: ({ id, name }: unSubscribeMutationProps) =>
+      linkStartegyToAccount(id, name, "unsubscribe"),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["my-strategies"] });
+    },
+  });
 
   const handleConfirm = () => {
     if (confirmAction === "deploy" || confirmAction === "stop") {
@@ -57,12 +72,18 @@ const StrategyCard: React.FC<Props> = ({
       );
     } else if (confirmAction === "squareOff") {
       handleSqureOffStrategy(strategy.StrategyName);
+    }else if(confirmAction === 'unsubscribe'){
+      toast.promise(unSubscribeMutation.mutateAsync({id :strategy.ID, name:strategy.StrategyName}), {
+        loading: "Unsubscribing strategy...",
+        success: (data) => data.message || "Strategy unsubscribed successfully",
+        error: (err) => err.message || "Failed to unsubscribe strategy",
+      });
     }
     setIsConfirmOpen(false);
     setConfirmAction(null);
   };
 
-  const openConfirmModal = (action: "deploy" | "stop" | "squareOff") => {
+  const openConfirmModal = (action: "deploy" | "stop" | "squareOff" | "unsubscribe") => {
     setConfirmAction(action);
     setIsConfirmOpen(true);
   };
@@ -77,7 +98,14 @@ const StrategyCard: React.FC<Props> = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>Option</DropdownMenuItem>
+            <DropdownMenuLabel>Options</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => openConfirmModal("unsubscribe")} 
+            className="cursor-pointer text-red-600 hover:bg-red-100 hover:!text-red-600"
+            >
+              Unsubscribe
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -175,3 +203,8 @@ const StrategyCard: React.FC<Props> = ({
 };
 
 export default StrategyCard;
+
+type unSubscribeMutationProps = {
+  id: number;
+  name: string;
+};

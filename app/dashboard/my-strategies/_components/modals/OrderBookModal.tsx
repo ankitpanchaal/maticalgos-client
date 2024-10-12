@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { fetchOrderBook } from "../../_actions";
 import { OrderBookTable } from "./OrderBookTable";
+import Spinner from "@/components/shared/Spinner";
 
 interface OrderBookProps {
   isOpen: boolean;
@@ -36,7 +37,9 @@ const OrderBookModal: React.FC<OrderBookProps> = ({
         </DialogHeader>
         <div className="h-full overflow-hidden">
           {isLoading ? (
-            <p>Loading order book...</p>
+            <div className="flex justify-center items-center h-24">
+              <Spinner size={26} />
+            </div>
           ) : error ? (
             <p>Error loading order book: {(error as Error).message}</p>
           ) : data?.data?.length === 0 ? (

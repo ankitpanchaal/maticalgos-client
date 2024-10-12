@@ -5,7 +5,7 @@ export interface IStrategy {
   Multiplier: number;
   Activate: number;
   Capital: number;
-  ID: string;
+  ID: number;
   bookedpnl: number;
   openpnl: number;
   totalpnl: number;

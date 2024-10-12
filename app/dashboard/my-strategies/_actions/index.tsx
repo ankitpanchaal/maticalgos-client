@@ -14,7 +14,7 @@ export const getMyStrategies = async (): Promise<GetAllStrategiesResponse> => {
 };
 
 export const modifyStrategyStatus = async (
-  StrategyID: string,
+  StrategyID: number,
   StrategyName: string,
   Activate: number
 ): Promise<{ message: string }> => {

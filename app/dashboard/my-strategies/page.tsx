@@ -9,6 +9,7 @@ import {
   squreOffStrategy,
 } from "./_actions";
 import { Skeleton } from "@/components/ui/skeleton";
+import NoData from "@/components/shared/NoData";
 
 const Page = () => {
   const queryClient = useQueryClient();
@@ -24,7 +25,7 @@ const Page = () => {
       name,
       activate,
     }: {
-      id: string;
+      id: number;
       name: string;
       activate: number;
     }) => modifyStrategyStatus(id, name, activate),
@@ -40,31 +41,30 @@ const Page = () => {
     },
   });
 
-  const handleStrategyStatus = (id: string, name: string, activate: number) => {
-    toast.promise(
-      statusMutation.mutateAsync({ id, name, activate }),
-      {
-        loading: 'Updating strategy status...',
-        success: (data) => data.message || 'Strategy status updated successfully',
-        error: (err) => err.message || 'Failed to update strategy status',
-      }
-    );
+  const handleStrategyStatus = (id: number, name: string, activate: number) => {
+    toast.promise(statusMutation.mutateAsync({ id, name, activate }), {
+      loading: "Updating strategy status...",
+      success: (data) => data.message || "Strategy status updated successfully",
+      error: (err) => err.message || "Failed to update strategy status",
+    });
   };
 
   const handleSqureOffStrategy = (name: string) => {
-    toast.promise(
-      squreOffMutation.mutateAsync({ name }),
-      {
-        loading: 'Squaring off strategy...',
-        success: (data) => data.message || 'Strategy squared off successfully',
-        error: (err) => err.message || 'Failed to square off strategy',
-      }
-    );
+    toast.promise(squreOffMutation.mutateAsync({ name }), {
+      loading: "Squaring off strategy...",
+      success: (data) => data.message || "Strategy squared off successfully",
+      error: (err) => err.message || "Failed to square off strategy",
+    });
   };
 
   return (
     <div className="container max-w-6xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">My Strategies</h1>
+
+      <div className="mt-4">
+        {data?.data?.length === 0&& !isLoading &&
+          <NoData />}
+      </div>
 
       <div className="grid md:grid-cols-3 gap-4">
         {isLoading
