@@ -33,7 +33,7 @@ const ConfirmationModal: React.FC<{
               ? "Are you sure you want to deploy this strategy?"
               : action === "stop"
               ? "Are you sure you want to stop this strategy?"
-              : action === "unsubscribe"
+              : action === "squareOff"
               ? "Are you sure you want to square off this strategy?"
               : "Are you sure you want to unsubscribe this strategy?"}
           </AlertDialogDescription>

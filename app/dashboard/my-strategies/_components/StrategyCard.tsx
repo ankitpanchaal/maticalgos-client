@@ -21,7 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChartLine, InfoIcon, MoreVertical } from "lucide-react";
+import { ChartLine, CircleDashed, CircleDot, Dot, InfoIcon, MoreVertical } from "lucide-react";
 import { IStrategy } from "../types";
 import formatPNL from "@/lib/formatPNL";
 import { Badge } from "@/components/ui/badge";
@@ -110,13 +110,13 @@ const StrategyCard: React.FC<Props> = ({
         </DropdownMenu>
 
         <Badge
-          className={`cursor-pointer hover:bg-${
+          className={`items-center gap-x-1 hover:bg-${
             isActive ? "green" : "red"
           }-100 bg-${isActive ? "green" : "red"}-100 text-${
             isActive ? "green" : "red"
           }-800`}
         >
-          {isActive ? "Active" : "Inactive"}
+          {isActive ? "• Active" : "• Inactive"}
         </Badge>
       </div>
       <CardHeader>
