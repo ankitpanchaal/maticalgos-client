@@ -151,11 +151,9 @@ const columns: ColumnDef<OrderBookItem>[] = [
     header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Transaction Type"),
     cell: ({ row }: { row: any }) => (
       <Badge
-        variant={
-          row.original.transType.toLowerCase() === "buy"
-            ? "default"
-            : "destructive"
-        }
+       className={row.original.transType.toLowerCase() === "buy"
+        ? "bg-green-500 hover:bg-green-500"
+        : "bg-red-500 hover:bg-red-500"}
       >
         {row.getValue("transType")}
       </Badge>
@@ -167,7 +165,11 @@ const columns: ColumnDef<OrderBookItem>[] = [
     cell:({ row }: { row: any }) => (
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger>View Operations</TooltipTrigger>
+          <TooltipTrigger>
+            <Badge variant="outline">
+            View Operations
+            </Badge>
+          </TooltipTrigger>
           <TooltipContent>
             <p>{row.original?.Operations}</p>
           </TooltipContent>
@@ -247,7 +249,7 @@ export function OrderBookTable({ data }: { data: OrderBookItem[] }) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
-    data,
+    data:data?.reverse() || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
@@ -266,7 +268,7 @@ export function OrderBookTable({ data }: { data: OrderBookItem[] }) {
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="px-4 py-3 border border-gray-200 font-medium text-left"
+                  className="px-4 py-1 border border-gray-200 font-medium text-center"
                 >
                   {header.isPlaceholder
                     ? null
@@ -281,7 +283,7 @@ export function OrderBookTable({ data }: { data: OrderBookItem[] }) {
         </thead>
         <tbody className="bg-white text-sm">
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="hover:bg-gray-50">
+            <tr key={row.id} className="hover:bg-gray-50 text-center">
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
