@@ -269,32 +269,34 @@ export default function getOrderbookColumns(
       header: ({ column }: { column: ColumnDef<OrderBookItem> }) =>
         getSortingButton(column, "Product Type"),
     },
-    {
-      header: "Actions",
-      cell: ({ row }: { row: any }) => (
-        <TooltipProvider delayDuration={0}>
-          <Tooltip>
-            <TooltipTrigger>
-              <Button
-                variant="secondary"
-                onClick={() => setSelectedRow(row.original)}
-                className="whitespace-nowrap"
-              >
-                <ChartNoAxesGantt size={18} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <span>View Order Details</span>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      ),
-    },
   ].sort(
     (a, b) =>
       columnPriorities[a.accessorKey as string] -
       columnPriorities[b.accessorKey as string]
   );
 
-  return columns;
+  const actionColumn: ColumnDef<OrderBookItem> = {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }: { row: any }) => (
+      <TooltipProvider delayDuration={0}>
+        <Tooltip>
+          <TooltipTrigger>
+            <Button
+              variant="secondary"
+              onClick={() => setSelectedRow(row.original)}
+              className="whitespace-nowrap"
+            >
+              <ChartNoAxesGantt size={18} />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent className="z-50 relative" side="left" >
+            <span>View Order Details</span>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ),
+  };
+
+  return { regularColumns: columns, actionColumn };
 }
