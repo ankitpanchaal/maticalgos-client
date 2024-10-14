@@ -72,3 +72,14 @@ export interface IntradayData {
   Datetime: string;
   PNL: number;
 }
+
+export interface OrderDetailsResponse {
+  status: boolean;
+  error: boolean;
+  data: OrderDetailsItem[];
+  message: string;
+}
+
+export type OrderDetailsItem = OrderBookItem & {
+orders: OrderBookItem[];
+}

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Card,
   CardContent,
@@ -32,6 +32,7 @@ import ChartModal from "./modals/ChartModal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { linkStartegyToAccount } from "../../explore/_actions/client";
 import toast from "react-hot-toast";
+import CustomToolTip from "@/components/shared/CustomToolTip";
 
 interface Props {
   strategy: IStrategy;
@@ -134,7 +135,12 @@ const StrategyCard: React.FC<Props> = ({
             <ChartLine size={18} />
           </Button>
           <span className="font-semibold">PNL</span>
-          <InstantTooltip strategy={strategy} />
+          <CustomToolTip trigger={<InfoIcon 
+              className="w-4 h-4 text-gray-400 cursor-pointer"
+            />} >
+              <PNLDisplay strategy={strategy} />
+          </CustomToolTip>
+          
         </div>
         <p
           className={`text-2xl font-bold text-center mt-2 ${
@@ -198,27 +204,4 @@ export default StrategyCard;
 type unSubscribeMutationProps = {
   id: number;
   name: string;
-};
-
-
-
-interface TooltipProps {
-  strategy: IStrategy;
-}
-
-const InstantTooltip: React.FC<TooltipProps> = ({ strategy }) => {
-  return (
-    <TooltipProvider delayDuration={0}>
-      <Tooltip >
-        <TooltipTrigger asChild>
-          <InfoIcon 
-            className="w-4 h-4 text-gray-400 cursor-help"
-          />
-        </TooltipTrigger>
-        <TooltipContent>
-          <PNLDisplay strategy={strategy} />
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
 };

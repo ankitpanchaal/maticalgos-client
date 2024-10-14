@@ -197,7 +197,7 @@ const ChartModal: React.FC<ChartModalProps> = ({ isOpen, onClose, stName }) => {
               margin={{
                 top: 5,
                 right: isMobile ? 0 : 30,
-                left: isMobile ? -20 : 20,
+                left: isMobile ? -"2.3%" : 20,
                 bottom: 5,
               }}
               //@ts-ignore

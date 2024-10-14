@@ -3,6 +3,7 @@ import {
   GetAllStrategiesResponse,
   IntradayResponse,
   OrderBookResponse,
+  OrderDetailsResponse,
 } from "../types";
 
 export const getMyStrategies = async (): Promise<GetAllStrategiesResponse> => {
@@ -60,6 +61,19 @@ export const fetchIntradayPNL = async (
 ): Promise<IntradayResponse> => {
   const res = await fetch(
     `/api/user/intraday-pnl?stname=${stname}`
+  );
+  const data = await res.json();
+  return data;
+};
+
+export const fetchOrderDetails = async (
+  reftag: number, strefid: number
+): Promise<OrderDetailsResponse> => {
+  const res = await fetch(
+    `/api/user/orderbook?reftag=${reftag}&strefid=${strefid}`,
+    {
+      method: "POST",
+    }
   );
   const data = await res.json();
   return data;
