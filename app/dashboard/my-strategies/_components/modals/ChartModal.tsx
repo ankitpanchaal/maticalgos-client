@@ -12,35 +12,37 @@ import {
   TooltipProps,
 } from "recharts";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { chartData } from "@/lib/constants/chart";
 import formatPNL from "@/lib/formatPNL";
+import { useQuery } from "@tanstack/react-query";
+import { fetchIntradayPNL } from "../../_actions";
+import Spinner from "@/components/shared/Spinner";
+import NoData from "@/components/shared/NoData";
 
 interface ChartModalProps {
   isOpen: boolean;
   onClose: () => void;
+  stName: string;
 }
+ 
 
-interface DataPoint {
-  Datetime: string;
-  PNL: number;
-}
+const ChartModal: React.FC<ChartModalProps> = ({ isOpen, onClose,stName }) => {
+  
+  const { isLoading, error, data } = useQuery({
+    queryKey: [`intraday-pnl-${stName}`],
+    queryFn: () =>  fetchIntradayPNL(stName),
+    enabled: isOpen,
+  });
+ 
+  const chartData = data &&  data.data || [];
 
-const ChartModal: React.FC<ChartModalProps> = ({ isOpen, onClose }) => {
   const [leftIndex, setLeftIndex] = useState<number>(0);
-  const [rightIndex, setRightIndex] = useState<number>(chartData.length - 1);
+  const [rightIndex, setRightIndex] = useState<number>(chartData?.length - 1);
   const [refAreaLeft, setRefAreaLeft] = useState<string | null>(null);
   const [refAreaRight, setRefAreaRight] = useState<string | null>(null);
 
@@ -132,6 +134,18 @@ const ChartModal: React.FC<ChartModalProps> = ({ isOpen, onClose }) => {
     return null;
   };
 
+  if(isLoading || data?.data.length === 0 || data?.error){
+    return <Dialog open={isOpen} onOpenChange={onClose}>
+    <DialogContent className="sm:min-w-[80vw]">
+      <DialogHeader>
+        <DialogTitle>PNL Chart</DialogTitle>
+      </DialogHeader>
+      <div className="flex justify-center mt-4">
+        {isLoading ? <Spinner /> : data?.error ? <p>Error fetching data</p> : <NoData />}
+      </div>
+    </DialogContent>
+  </Dialog>
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

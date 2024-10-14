@@ -69,28 +69,28 @@ const columnPriorities: { [key: string]: number } = {
   reftag: 3,
   StrategyName: 4,
   orderType: 5,
-  price: 6,
-  limitPrice: 7,
-  triggerPrice: 8,
-  token: 9,
-  segment: 10,
-  symbol: 11,
-  qty: 12,
-  transType: 13,
-  Operations: 14,
-  ordersplaced: 15,
-  ordersdone: 16,
-  ordersexecuted: 17,
-  placed_at: 18,
-  recon_at: 19,
-  trade_at: 20,
-  filledQty: 21,
-  tradedQty: 22,
-  tradeValue: 23,
-  tradePrice: 24,
-  status: 25,
+  status: 6,
+  price: 7,
+  limitPrice: 8,
+  triggerPrice: 9,
+  token: 10,
+  segment: 11,
+  symbol: 12,
+  qty: 13,
+  transType: 14,
+  Operations: 15,
+  ordersplaced: 16,
+  ordersdone: 17,
+  ordersexecuted: 18,
+  placed_at: 19,
+  recon_at: 20,
+  trade_at: 21,
+  filledQty: 22,
+  tradedQty: 23,
+  tradeValue: 24,
+  tradePrice: 25,
   active: 26,
-  productType: 27, // Lower priority
+  productType: 27,
 };
 
 // Sort columns by priority
@@ -163,7 +163,7 @@ const columns: ColumnDef<OrderBookItem>[] = [
     accessorKey: "Operations",
     header: "Operations",
     cell:({ row }: { row: any }) => (
-      <TooltipProvider>
+      <TooltipProvider delayDuration={0} >
         <Tooltip>
           <TooltipTrigger>
             <Badge variant="outline">
@@ -225,13 +225,23 @@ const columns: ColumnDef<OrderBookItem>[] = [
   {
     accessorKey: "status",
     header: ({ column }: { column: ColumnDef<OrderBookItem> }) => getSortingButton(column, "Status"),
-    cell: ({ row }: { row: any }) => {
+    cell: ({ row }:{row:any}) => {
       const value = row.getValue("status") as string;
-      let variant: "default" | "destructive" | "outline" = "outline";
-      if (value.toLowerCase() === "executed") variant = "default";
-      if (["cancelled", "error"].includes(value.toLowerCase()))
-        variant = "destructive";
-      return <Badge variant={variant}>{value}</Badge>;
+      const lowercaseValue = value.toLowerCase();
+      
+      let className = "bg-gray-200 hover:bg-gray-200 text-gray-800"; // Default for pending
+      
+      if (lowercaseValue === "executed") {
+        className = "bg-green-200 hover:bg-green-200 text-green-800";
+      } else if (["cancelled", "error"].includes(lowercaseValue)) {
+        className = "bg-red-200 text-red-800 hover:bg-red-200";
+      }
+      
+      return (
+        <Badge className={`font-medium ${className}`}>
+          {value}
+        </Badge>
+      );
     },
   },
   {

@@ -134,16 +134,7 @@ const StrategyCard: React.FC<Props> = ({
             <ChartLine size={18} />
           </Button>
           <span className="font-semibold">PNL</span>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <InfoIcon className="w-4 h-4 text-gray-400 cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <PNLDisplay strategy={strategy} />
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <InstantTooltip strategy={strategy} />
         </div>
         <p
           className={`text-2xl font-bold text-center mt-2 ${
@@ -197,7 +188,7 @@ const StrategyCard: React.FC<Props> = ({
         onClose={() => setIsOrderBookOpen(false)}
       />
 
-      <ChartModal isOpen={isChartOpen} onClose={() => setIsChartOpen(false)} />
+      <ChartModal isOpen={isChartOpen} onClose={() => setIsChartOpen(false)} stName={strategy.StrategyName} />
     </Card>
   );
 };
@@ -207,4 +198,27 @@ export default StrategyCard;
 type unSubscribeMutationProps = {
   id: number;
   name: string;
+};
+
+
+
+interface TooltipProps {
+  strategy: IStrategy;
+}
+
+const InstantTooltip: React.FC<TooltipProps> = ({ strategy }) => {
+  return (
+    <TooltipProvider delayDuration={0}>
+      <Tooltip >
+        <TooltipTrigger asChild>
+          <InfoIcon 
+            className="w-4 h-4 text-gray-400 cursor-help"
+          />
+        </TooltipTrigger>
+        <TooltipContent>
+          <PNLDisplay strategy={strategy} />
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
 };

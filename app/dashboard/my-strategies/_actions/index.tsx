@@ -1,6 +1,7 @@
 import { API_ENDPOINT } from "@/lib/constants/app-constants";
 import {
   GetAllStrategiesResponse,
+  IntradayResponse,
   OrderBookResponse,
 } from "../types";
 
@@ -49,6 +50,16 @@ export const fetchOrderBook = async (
 ): Promise<OrderBookResponse> => {
   const res = await fetch(
     `/api/user/orderbook?acname=${acname}&stname=${stname}`
+  );
+  const data = await res.json();
+  return data;
+};
+
+export const fetchIntradayPNL = async (
+  stname: string
+): Promise<IntradayResponse> => {
+  const res = await fetch(
+    `/api/user/intraday-pnl?stname=${stname}`
   );
   const data = await res.json();
   return data;

@@ -61,3 +61,14 @@ export interface OrderBookResponse {
 }
 
 
+
+export interface IntradayResponse {
+  status: boolean;
+  error: boolean;
+  data: IntradayData[];
+}
+
+export interface IntradayData {
+  Datetime: string;
+  PNL: number;
+}
