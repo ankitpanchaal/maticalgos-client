@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   CartesianGrid,
   Line,
@@ -23,34 +23,46 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchIntradayPNL } from "../../_actions";
 import Spinner from "@/components/shared/Spinner";
 import NoData from "@/components/shared/NoData";
+import { RefreshCw, RotateCw } from "lucide-react";
+import {
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+  Tooltip as TooltipComponent,
+} from "@/components/ui/tooltip";
 
 interface ChartModalProps {
   isOpen: boolean;
   onClose: () => void;
   stName: string;
 }
- 
 
-const ChartModal: React.FC<ChartModalProps> = ({ isOpen, onClose,stName }) => {
-  
-  const { isLoading, error, data } = useQuery({
+const ChartModal: React.FC<ChartModalProps> = ({ isOpen, onClose, stName }) => {
+  const { isLoading, error, data, refetch} = useQuery({
     queryKey: [`intraday-pnl-${stName}`],
-    queryFn: () =>  fetchIntradayPNL(stName),
+    queryFn: () => fetchIntradayPNL(stName),
     enabled: isOpen,
   });
- 
-  const chartData = data &&  data.data || [];
+
+  const chartData = useMemo(() => data?.data || [], [data]);
 
   const [leftIndex, setLeftIndex] = useState<number>(0);
-  const [rightIndex, setRightIndex] = useState<number>(chartData?.length - 1);
+  const [rightIndex, setRightIndex] = useState<number>(chartData.length - 1);
   const [refAreaLeft, setRefAreaLeft] = useState<string | null>(null);
   const [refAreaRight, setRefAreaRight] = useState<string | null>(null);
 
-  const isMobile = window?.innerWidth < 640;
+  useEffect(() => {
+    setRightIndex(chartData.length - 1);
+  }, [chartData]);
+
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
 
   const formatXAxis = (tickItem: string): string => {
     const date = new Date(tickItem);
-    return `${date.getMonth() + 1}/${date.getDate()}`;
+    return `${date.getHours()}:${date
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   const visibleData = useMemo(() => {
@@ -75,7 +87,7 @@ const ChartModal: React.FC<ChartModalProps> = ({ isOpen, onClose,stName }) => {
     }
 
     return sampledData;
-  }, [leftIndex, rightIndex]);
+  }, [chartData, leftIndex, rightIndex, isMobile]);
 
   const zoom = () => {
     if (refAreaLeft === refAreaRight || refAreaRight === null) {
@@ -134,33 +146,58 @@ const ChartModal: React.FC<ChartModalProps> = ({ isOpen, onClose,stName }) => {
     return null;
   };
 
-  if(isLoading || data?.data.length === 0 || data?.error){
-    return <Dialog open={isOpen} onOpenChange={onClose}>
-    <DialogContent className="sm:min-w-[80vw]">
-      <DialogHeader>
-        <DialogTitle>PNL Chart</DialogTitle>
-      </DialogHeader>
-      <div className="flex justify-center mt-4">
-        {isLoading ? <Spinner /> : data?.error ? <p>Error fetching data</p> : <NoData />}
-      </div>
-    </DialogContent>
-  </Dialog>
+  if (isLoading || chartData.length === 0 || error) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:min-w-[80vw]">
+          <DialogHeader>
+            <DialogTitle>PNL Chart</DialogTitle>
+          </DialogHeader>
+          <div className="flex justify-center mt-4">
+            {isLoading ? (
+              <Spinner />
+            ) : error ? (
+              <p>Error fetching data</p>
+            ) : (
+              <NoData />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:min-w-[80vw]">
         <DialogHeader>
-          <DialogTitle>PNL Chart</DialogTitle>
+          <div className="flex justify-between">
+            <DialogTitle>PNL Chart</DialogTitle>
+            {/* <TooltipProvider delayDuration={0}>
+              <TooltipComponent>
+                <TooltipTrigger asChild>
+                  <div
+                    onClick={refetch}
+                    className="-mt-2 mr-4 cursor-pointer hover:scale-110 transition-all ease-linear"
+                  >
+                    <RotateCw size={18} />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="">Refresh</p>
+                </TooltipContent>
+              </TooltipComponent>
+            </TooltipProvider> */}
+          </div>
         </DialogHeader>
-        <div style={noSelectStyle}  >
+        <div style={noSelectStyle}>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart
               data={visibleData}
               margin={{
                 top: 5,
-                right: isMobile? 0 :30,
-                left: isMobile ? -20 :20,
+                right: isMobile ? 0 : 30,
+                left: isMobile ? -20 : 20,
                 bottom: 5,
               }}
               //@ts-ignore

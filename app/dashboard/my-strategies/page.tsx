@@ -17,7 +17,7 @@ const Page = () => {
   const { isLoading, error, data } = useQuery({
     queryKey: ["my-strategies"],
     queryFn: getMyStrategies,
-    // refetchInterval:1500
+    refetchInterval:1500
   });
 
   const statusMutation = useMutation({
