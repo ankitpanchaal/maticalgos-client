@@ -162,7 +162,7 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
                   className={`py-3 px-4 text-center font-semibold text-gray-600 bg-gray-50 ${
                     index === 0
                       ? "rounded-tl-lg"
-                      : index === headerGroup.headers.length - 1
+                      : index === headerGroup.headers?.length - 1
                       ? "rounded-tr-lg"
                       : ""
                   }`}
@@ -179,7 +179,7 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
           ))}
         </thead>
         <tbody>
-          {table.getRowModel().rows.map((row) => (
+          {table?.getRowModel()?.rows.map((row) => (
             <React.Fragment key={row.id}>
               <tr
                 onClick={() => handleRowClick(row.id)}
@@ -193,7 +193,7 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
                     className={`py-3 mb-4 px-4 text-center ${
                       index === 0
                         ? "rounded-tl-lg rounded-bl-lg"
-                        : index === row.getVisibleCells().length - 1
+                        : index === row.getVisibleCells()?.length - 1
                         ? "rounded-tr-lg rounded-br-lg"
                         : ""
                     }`}
@@ -206,7 +206,7 @@ const StrategyExplorer: React.FC<StrategyExplorerProps> = ({ strategies }) => {
                 ))}
               </tr>
               <tr>
-                <td colSpan={columns.length} className="p-0">
+                <td colSpan={columns?.length} className="p-0">
                   <Accordion type="single" value={expandedRow ?? ""}>
                     <AccordionItem value={row.id}>
                       <AccordionContent>

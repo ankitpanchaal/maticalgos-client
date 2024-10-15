@@ -9,6 +9,7 @@ import {
 import { fetchOrderBook } from "../../_actions";
 import { OrderBookTable } from "./OrderBookTable";
 import Spinner from "@/components/shared/Spinner";
+import NoData from "@/components/shared/NoData";
 
 interface OrderBookProps {
   isOpen: boolean;
@@ -44,7 +45,7 @@ const OrderBookModal: React.FC<OrderBookProps> = ({
             <p>Error loading order book: {(error as Error).message}</p>
           ) : data?.data?.length === 0 ? (
             <div className="flex h-28 justify-center items-center">
-              <p>No orders found</p>
+            <NoData label="No data available" />
             </div>
           ) : (
             data &&  <OrderBookTable data={data.data} />

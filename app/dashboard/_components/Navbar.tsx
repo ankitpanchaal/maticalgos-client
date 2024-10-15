@@ -18,6 +18,7 @@ import { AccountResponse } from "../type";
 import { toast } from "react-hot-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ExternalLink } from "lucide-react";
+import ConfirmationModal from "../my-strategies/_components/modals/ConfirmationModal";
 
 const Navbar = () => {
   const path = usePathname();
@@ -31,6 +32,7 @@ const Navbar = () => {
 
   const [tradeStatus, setTradeStatus] = useState<string | undefined>(undefined);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const name = data?.data?.[0]?.AccountName;
 
   useEffect(() => {
@@ -39,7 +41,11 @@ const Navbar = () => {
     }
   }, [data]);
 
-  const handleTradeStatusToggle = async () => {
+  const handleTradeStatusToggle = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmStatusChange = async () => {
     if (isUpdating) return;
 
     setIsUpdating(true);
@@ -56,7 +62,10 @@ const Navbar = () => {
         },
         error: "Failed to update trade status",
       })
-      .finally(() => setIsUpdating(false));
+      .finally(() => {
+        setIsUpdating(false);
+        setIsModalOpen(false);
+      });
   };
 
   const menuItems = [
@@ -141,6 +150,14 @@ const Navbar = () => {
           </DropdownMenu>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmStatusChange}
+        action="account_status"
+        actionButtonLabel={tradeStatus === "active" ? "Deactivate" : "Activate"}
+      />
     </nav>
   );
 };
@@ -157,8 +174,8 @@ const Menu = ({
   return (
     <Link href={`/dashboard${href}`} passHref>
       <span
-        className={`font-semibold inline-flex items-center relative group hover:text-gray-900 ${
-          isActive ? "text-black" : "text-gray-700"
+        className={`font-semibold inline-flex  px-2 py-1 rounded-md items-center relative group hover:text-gray-900 ${
+          isActive ? "text-black bg-gray-200" : "text-gray-700 bg-white"
         }`}
       >
         {label}

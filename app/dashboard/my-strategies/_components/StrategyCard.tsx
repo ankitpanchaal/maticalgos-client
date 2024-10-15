@@ -129,6 +129,7 @@ const StrategyCard: React.FC<Props> = ({
         <div className="flex items-center space-x-2 justify-center">
           <Button
             variant={"secondary"}
+            className="hover:bg-gray-200"
             size={"sm"}
             onClick={() => setIsChartOpen(true)}
           >

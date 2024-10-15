@@ -2,11 +2,24 @@ import React from "react";
 import { OrderBookItem } from "../../types";
 import { fetchOrderDetails } from "../../_actions";
 import { useQuery } from "@tanstack/react-query";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Spinner from "@/components/shared/Spinner";
+import NoData from "@/components/shared/NoData";
 
 interface OrderDetailsProps {
   order: OrderBookItem | null;
@@ -57,7 +70,7 @@ const OrderDetails = ({ order, isOpen, onClose }: OrderDetailsProps) => {
           ) : (
             <div className="space-y-6">
               <Table>
-                <TableHeader className="bg-gray-100 " >
+                <TableHeader className="bg-gray-100 ">
                   <TableRow>
                     <TableHead>Order ID</TableHead>
                     <TableHead>Status</TableHead>
@@ -68,19 +81,27 @@ const OrderDetails = ({ order, isOpen, onClose }: OrderDetailsProps) => {
                     <TableHead>Placed At</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
-                  {data?.data[0].orders.map((order: any) => (
-                    <TableRow key={order.orderid} >
-                      <TableCell >{order.orderid}</TableCell>
-                      <TableCell>{renderValue(order.status)}</TableCell>
-                      <TableCell>{order.qty}</TableCell>
-                      <TableCell>{order.filledQty || "-"}</TableCell>
-                      <TableCell>{order.tradePrice || "-"}</TableCell>
-                      <TableCell>{order.tradeValue || "-"}</TableCell>
-                      <TableCell>{formatDate(order.placed_at)}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
+                {data?.data[0].orders?.length === 0 ? (
+                   <TableBody>
+                    <TableCell colSpan={7} className="text-center">
+                   <NoData label="No data available" />
+                    </TableCell>
+                   </TableBody>
+                ) : (
+                  <TableBody>
+                    {data?.data[0]?.orders?.map((order: any) => (
+                      <TableRow key={order.orderid}>
+                        <TableCell>{order.orderid}</TableCell>
+                        <TableCell>{renderValue(order.status)}</TableCell>
+                        <TableCell>{order.qty}</TableCell>
+                        <TableCell>{order.filledQty || "-"}</TableCell>
+                        <TableCell>{order.tradePrice || "-"}</TableCell>
+                        <TableCell>{order.tradeValue || "-"}</TableCell>
+                        <TableCell>{formatDate(order.placed_at)}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                )}
               </Table>
             </div>
           )}

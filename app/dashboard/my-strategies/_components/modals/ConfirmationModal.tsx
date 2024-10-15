@@ -13,8 +13,9 @@ const ConfirmationModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  action: "deploy" | "stop" | "squareOff" | "unsubscribe" | null;
-}> = ({ isOpen, onClose, onConfirm, action }) => {
+  actionButtonLabel?: string;
+  action: "deploy" | "stop" | "squareOff" | "unsubscribe" | "account_status" | null;
+}> = ({ isOpen, onClose, onConfirm, action,actionButtonLabel }) => {
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
@@ -26,6 +27,7 @@ const ConfirmationModal: React.FC<{
               ? "Stop Strategy"
               : action === "squareOff"
               ? "Square Off Strategy"
+              : action === "account_status" ? "Account Status"
               : "Unsubscribe Strategy"}
           </AlertDialogTitle>
           <AlertDialogDescription>
@@ -35,6 +37,7 @@ const ConfirmationModal: React.FC<{
               ? "Are you sure you want to stop this strategy?"
               : action === "squareOff"
               ? "Are you sure you want to square off this strategy?"
+              : action === "account_status" ? "Are you sure you want to change the account status?"
               : "Are you sure you want to unsubscribe this strategy?"}
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -52,7 +55,7 @@ const ConfirmationModal: React.FC<{
                 : action === "unsubscribe" ? "bg-red-500 hover:bg-red-500" :"bg-primary"
             }`}
           >
-            {action === "deploy"
+            {actionButtonLabel ? actionButtonLabel : action === "deploy"
               ? "Deploy"
               : action === "stop"
               ? "Stop"
