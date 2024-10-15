@@ -174,8 +174,8 @@ const Menu = ({
   return (
     <Link href={`/dashboard${href}`} passHref>
       <span
-        className={`font-semibold inline-flex  px-2 py-1 rounded-md items-center relative group hover:text-gray-900 ${
-          isActive ? "text-black bg-gray-200" : "text-gray-700 bg-white"
+        className={`font-semibold inline-flex items-center relative group hover:text-gray-900 ${
+          isActive ? "text-black" : "text-gray-700 "
         }`}
       >
         {label}
