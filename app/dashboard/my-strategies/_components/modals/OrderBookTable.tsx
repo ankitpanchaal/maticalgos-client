@@ -6,14 +6,22 @@ import {
   getSortedRowModel,
   SortingState,
 } from "@tanstack/react-table";
-import { OrderBookItem } from "../../types";
+import { OrderBookItem, TOrderModalType } from "../../types";
 import OrderDetails from "./OrderDetails";
 import getOrderbookColumns from "./_utils/getOrderbookColumns";
+import { Button } from "@/components/ui/button";
+import { Repeat } from "lucide-react";
+import ReExecuteOrderModal from "./ReExecuteOrderModal";
 
 export function OrderBookTable({ data }: { data: OrderBookItem[] }) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [selectedRow, setSelectedRow] = useState<OrderBookItem | null>(null);
-  const { regularColumns, actionColumn } = getOrderbookColumns(setSelectedRow);
+  // const [reExecuteRow, setReExecuteRow] = useState<OrderBookItem | null>(null);
+  const [modalType, setModalType] = useState<TOrderModalType>(null);
+  const { regularColumns, actionColumn } = getOrderbookColumns(
+    setSelectedRow,
+    setModalType
+  );
 
   const table = useReactTable({
     data: data?.reverse() || [],
@@ -58,7 +66,7 @@ export function OrderBookTable({ data }: { data: OrderBookItem[] }) {
                     ].getContext()
                 )}
               </th>
-            </tr>
+            </tr>{" "}
           </thead>
           <tbody className="bg-white text-sm">
             {table.getRowModel().rows.map((row) => (
@@ -78,7 +86,7 @@ export function OrderBookTable({ data }: { data: OrderBookItem[] }) {
                     </td>
                   ))}
                 <div className="sticky right-0 shadow-md bg-white px-4 py-2 whitespace-nowrap border border-gray-200">
-                  <td>
+                  <td className="flex space-x-2">
                     {flexRender(
                       actionColumn.cell,
                       row
@@ -93,10 +101,17 @@ export function OrderBookTable({ data }: { data: OrderBookItem[] }) {
         </table>
       </div>
       <OrderDetails
-        isOpen={!!selectedRow}
-        onClose={() => setSelectedRow(null)}
+        isOpen={modalType === "DETAILS"}
+        onClose={() => setModalType(null)}
         order={selectedRow}
       />
+      {modalType === "RE_EXECUTE" && (
+        <ReExecuteOrderModal
+          isOpen={modalType === "RE_EXECUTE"}
+          onClose={() => setModalType(null)}
+          order={selectedRow}
+        />
+      )}
     </>
   );
 }

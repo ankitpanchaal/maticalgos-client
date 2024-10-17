@@ -83,3 +83,5 @@ export interface OrderDetailsResponse {
 export type OrderDetailsItem = OrderBookItem & {
 orders: OrderBookItem[];
 }
+
+export type TOrderModalType = "DETAILS" | "RE_EXECUTE" | null

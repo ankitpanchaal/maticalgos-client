@@ -12,9 +12,10 @@ import {
   ArrowUp,
   ArrowUpDown,
   ChartNoAxesGantt,
+  Repeat,
 } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import { OrderBookItem } from "../../../types";
+import { OrderBookItem, TOrderModalType } from "../../../types";
 import formatDate from "@/lib/formatDate";
 
 const getSortingButton = (column: ColumnDef<OrderBookItem>, label: string) => (
@@ -85,7 +86,8 @@ const columnPriorities: { [key: string]: number } = {
 };
 
 export default function getOrderbookColumns(
-  setSelectedRow: React.Dispatch<React.SetStateAction<OrderBookItem | null>>
+  setSelectedRow: React.Dispatch<React.SetStateAction<OrderBookItem | null>>,
+  setModalType: React.Dispatch<React.SetStateAction<TOrderModalType | null>>
 ) {
   const columns: ColumnDef<OrderBookItem>[] = [
     {
@@ -279,22 +281,46 @@ export default function getOrderbookColumns(
     id: "actions",
     header: "Actions",
     cell: ({ row }: { row: any }) => (
-      <TooltipProvider delayDuration={0}>
-        <Tooltip>
-          <TooltipTrigger>
-            <Button
-              variant="secondary"
-              onClick={() => setSelectedRow(row.original)}
-              className="whitespace-nowrap"
-            >
-              <ChartNoAxesGantt size={18} />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent className="z-50 relative" side="left" >
-            <span>View Order Details</span>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <div className="flex gap-x-2 items-center">
+        <TooltipProvider delayDuration={0}>
+          <Tooltip>
+            <TooltipTrigger>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setSelectedRow(row.original);
+                  setModalType("DETAILS");
+                }}
+                className="whitespace-nowrap"
+              >
+                <ChartNoAxesGantt size={18} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="z-50 relative" side="left">
+              <span>View Order Details</span>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        <TooltipProvider delayDuration={0}>
+          <Tooltip>
+            <TooltipTrigger>
+              <Button
+                variant="secondary"
+                onClick={() =>{
+                  setSelectedRow(row.original);
+                  setModalType("RE_EXECUTE");
+                }}
+                className="whitespace-nowrap"
+              >
+                <Repeat size={18} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="z-50 relative" side="left">
+              <span>Re Execute Order</span>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
     ),
   };
 
