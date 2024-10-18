@@ -61,11 +61,11 @@ const Page = () => {
   return (
     <div className="container max-w-6xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">My Strategies</h1>
-{/* 
+
       <div className="mt-4">
         {data?.data?.length === 0&& !isLoading &&
           <NoData />}
-      </div> */}
+      </div>
 
       <div className="grid md:grid-cols-3 gap-4">
         {isLoading

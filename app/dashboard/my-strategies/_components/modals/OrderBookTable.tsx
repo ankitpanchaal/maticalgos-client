@@ -9,14 +9,10 @@ import {
 import { OrderBookItem, TOrderModalType } from "../../types";
 import OrderDetails from "./OrderDetails";
 import getOrderbookColumns from "./_utils/getOrderbookColumns";
-import { Button } from "@/components/ui/button";
-import { Repeat } from "lucide-react";
-import ReExecuteOrderModal from "./ReExecuteOrderModal";
 
 export function OrderBookTable({ data }: { data: OrderBookItem[] }) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [selectedRow, setSelectedRow] = useState<OrderBookItem | null>(null);
-  // const [reExecuteRow, setReExecuteRow] = useState<OrderBookItem | null>(null);
   const [modalType, setModalType] = useState<TOrderModalType>(null);
   const { regularColumns, actionColumn } = getOrderbookColumns(
     setSelectedRow,
@@ -105,13 +101,6 @@ export function OrderBookTable({ data }: { data: OrderBookItem[] }) {
         onClose={() => setModalType(null)}
         order={selectedRow}
       />
-      {modalType === "RE_EXECUTE" && (
-        <ReExecuteOrderModal
-          isOpen={modalType === "RE_EXECUTE"}
-          onClose={() => setModalType(null)}
-          order={selectedRow}
-        />
-      )}
     </>
   );
 }

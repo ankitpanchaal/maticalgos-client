@@ -301,25 +301,6 @@ export default function getOrderbookColumns(
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <TooltipProvider delayDuration={0}>
-          <Tooltip>
-            <TooltipTrigger>
-              <Button
-                variant="secondary"
-                onClick={() =>{
-                  setSelectedRow(row.original);
-                  setModalType("RE_EXECUTE");
-                }}
-                className="whitespace-nowrap"
-              >
-                <Repeat size={18} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent className="z-50 relative" side="left">
-              <span>Re Execute Order</span>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
       </div>
     ),
   };
