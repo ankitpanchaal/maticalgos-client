@@ -64,7 +64,6 @@ export const POST = withUserAuth(async (req: NextRequest) => {
     apiUrl.searchParams.set("strefid", strefid);
     apiUrl.searchParams.set("withorders", 'true');
 
-    console.log('apiUrl -----> ', apiUrl.toString());
     const response = await fetch(apiUrl.toString(), {
       method: "GET",
       headers: {
